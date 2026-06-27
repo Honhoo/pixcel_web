@@ -1,0 +1,558 @@
+[
+  {
+    "id": "opl-summer",
+    "title": "OPL 暑期赛主视觉",
+    "category": "KEY VISUAL",
+    "year": "2021",
+    "summary": "以赛事气质与产品角色为核心，建立兼具传播识别与舞台延展性的主视觉系统。",
+    "tags": [
+      "赛事 KV",
+      "视觉系统",
+      "电竞传播"
+    ],
+    "cover": "/assets/cases/opl-summer/1782502172011-2021-opl-kv-_logo.jpg",
+    "featured": false,
+    "featuredOrder": 1,
+    "masonry": true,
+    "masonryOrder": 1,
+    "masonryImages": [],
+    "detailMedia": [],
+    "masonryMedia": []
+  },
+  {
+    "id": "ivs-asia",
+    "title": "IVS 中文亚洲对抗赛",
+    "category": "KEY VISUAL",
+    "year": "2022",
+    "summary": "围绕亚洲对抗赛的竞技张力，完成高规格横版主视觉与传播封面表达。",
+    "tags": [
+      "KEY VISUAL",
+      "赛事宣发",
+      "横版主视觉"
+    ],
+    "cover": "/assets/cases/key-visual/ivs-asia.jpg",
+    "featured": true,
+    "featuredOrder": 2,
+    "masonry": true,
+    "masonryOrder": 2,
+    "masonryImages": [
+      "/assets/cases/key-visual/ivs-asia.jpg",
+      "/assets/cases/key-visual/opl-finals.jpg"
+    ],
+    "detailMedia": [
+      {
+        "type": "image",
+        "src": "/assets/cases/key-visual/ivs-asia.jpg",
+        "alt": "IVS 中文亚洲对抗赛 KV"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/key-visual/opl-finals.jpg",
+        "alt": "赛事视觉参考"
+      }
+    ],
+    "masonryMedia": [
+      {
+        "type": "image",
+        "src": "/assets/cases/key-visual/ivs-asia.jpg",
+        "alt": "IVS 中文亚洲对抗赛"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/key-visual/opl-finals.jpg",
+        "alt": "IVS 中文亚洲对抗赛"
+      }
+    ]
+  },
+  {
+    "id": "event-package",
+    "title": "赛事直播包装系统",
+    "category": "PACKAGE",
+    "year": "2026",
+    "summary": "覆盖大屏、直播导视和动态包装的赛事视觉资产，服务现场和线上传播双场景。",
+    "tags": [
+      "直播包装",
+      "大屏视觉",
+      "动态图形"
+    ],
+    "cover": "/assets/cases/package/event-package-01.png",
+    "featured": true,
+    "featuredOrder": 3,
+    "masonry": true,
+    "masonryOrder": 3,
+    "masonryImages": [
+      "/assets/cases/package/event-package-01.png",
+      "/assets/cases/package/event-package-02.png",
+      "/assets/cases/package/event-package-03.png"
+    ],
+    "detailMedia": [
+      {
+        "type": "image",
+        "src": "/assets/cases/package/event-package-01.png",
+        "alt": "赛事包装画面 1"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/package/event-package-02.png",
+        "alt": "赛事包装画面 2"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/package/event-package-03.png",
+        "alt": "赛事包装画面 3"
+      }
+    ],
+    "masonryMedia": [
+      {
+        "type": "image",
+        "src": "/assets/cases/package/event-package-01.png",
+        "alt": "赛事直播包装系统"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/package/event-package-02.png",
+        "alt": "赛事直播包装系统"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/package/event-package-03.png",
+        "alt": "赛事直播包装系统"
+      }
+    ]
+  },
+  {
+    "id": "yugengji",
+    "title": "渔耕记品牌VI系统",
+    "category": "KEY VISUAL",
+    "year": "2026",
+    "summary": "从品牌识别到画面秩序重塑，建立更完整、更适合落地应用的视觉系统。",
+    "tags": [
+      "品牌视觉",
+      "包装延展",
+      "识别系统"
+    ],
+    "cover": "/assets/cases/yugengji/1782502223436-_-2_1.jpg",
+    "featured": true,
+    "featuredOrder": 4,
+    "masonry": true,
+    "masonryOrder": 4,
+    "masonryImages": [],
+    "detailMedia": [
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309209-_-2_1.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309215-_-2_2.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309219-_-2_3.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309221-_-2_4.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309222-_-2_5.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309229-_-2_6.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309233-_-2_7.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309236-_-2_8.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309251-_-2_9.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309261-_-2_10.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309268-_-2_11.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309276-_-2_12.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309283-_-2_13.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309295-_-2_14.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309301-_-2_15.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309312-_-2_16.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309321-_-2_17.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309332-_-2_18.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309339-_-2_19.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309351-_-2_20.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309359-_-2_21.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309371-_-2_22.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309378-_-2_23.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309389-_-2_24.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309399-_-2_25.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309407-_-2_26.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309421-_-2_27.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309431-_-2_28.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309440-_-2_29.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309452-_-2_30.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309462-_-2_31.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309470-_-2_32.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502309478-_-2_33.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      }
+    ],
+    "masonryMedia": [
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502334747-_-2_13.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502334751-_-2_15.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502334754-_-2_16.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502334758-_-2_18.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502334761-_-2_19.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502334767-_-2_20.jpg",
+        "alt": "渔耕记品牌视觉调整"
+      }
+    ]
+  },
+  {
+    "id": "identity-v-campaign",
+    "title": "第五人格倒计时传播素材",
+    "category": "媒体传播",
+    "year": "2026",
+    "summary": "以短周期传播节奏为核心，设计高识别度的倒计时物料与社媒视觉内容。",
+    "tags": [
+      "社媒传播",
+      "倒计时",
+      "内容设计"
+    ],
+    "cover": "/assets/cases/media/identity-v-countdown.jpg",
+    "featured": true,
+    "featuredOrder": 5,
+    "masonry": true,
+    "masonryOrder": 5,
+    "masonryImages": [
+      "/assets/cases/media/identity-v-countdown.jpg"
+    ],
+    "detailMedia": [
+      {
+        "type": "image",
+        "src": "/assets/cases/media/identity-v-countdown.jpg",
+        "alt": "第五人格倒计时竖版传播图"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/media/identity-v-countdown-wide.png",
+        "alt": "第五人格倒计时横版传播图"
+      }
+    ],
+    "masonryMedia": [
+      {
+        "type": "image",
+        "src": "/assets/cases/media/identity-v-countdown.jpg",
+        "alt": "第五人格倒计时传播"
+      }
+    ]
+  },
+  {
+    "id": "offline-activation",
+    "title": "线下活动执行视觉",
+    "category": "媒体传播",
+    "year": "2026",
+    "summary": "整合现场空间、互动动线和视觉陈列，让传播内容在真实场景中形成持续触达。",
+    "tags": [
+      "线下执行",
+      "空间传播",
+      "活动视觉"
+    ],
+    "cover": "/assets/cases/media/offline-02.jpg",
+    "featured": true,
+    "featuredOrder": 6,
+    "masonry": true,
+    "masonryOrder": 6,
+    "masonryImages": [
+      "/assets/cases/media/offline-01.jpg",
+      "/assets/cases/media/offline-02.jpg",
+      "/assets/cases/media/offline-03.jpg"
+    ],
+    "detailMedia": [
+      {
+        "type": "image",
+        "src": "/assets/cases/media/offline-01.jpg",
+        "alt": "线下活动现场 1"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/media/offline-02.jpg",
+        "alt": "线下活动现场 2"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/media/offline-03.jpg",
+        "alt": "线下活动现场 3"
+      }
+    ],
+    "masonryMedia": [
+      {
+        "type": "image",
+        "src": "/assets/cases/media/offline-01.jpg",
+        "alt": "线下活动执行视觉"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/media/offline-02.jpg",
+        "alt": "线下活动执行视觉"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/media/offline-03.jpg",
+        "alt": "线下活动执行视觉"
+      }
+    ]
+  },
+  {
+    "id": "valorant-energy",
+    "title": "无畏契约源能国际邀请赛",
+    "category": "虚幻引擎",
+    "year": "2026",
+    "summary": "围绕赛事包装和虚拟视觉场景，构建高能量、强速度感的视觉片段。",
+    "tags": [
+      "虚拟场景",
+      "赛事视觉",
+      "Unreal"
+    ],
+    "cover": "/assets/cases/unreal/valorant-01.png",
+    "featured": false,
+    "featuredOrder": 7,
+    "masonry": true,
+    "masonryOrder": 7,
+    "masonryImages": [
+      "/assets/cases/unreal/valorant-01.png",
+      "/assets/cases/unreal/valorant-02.png"
+    ],
+    "detailMedia": [
+      {
+        "type": "image",
+        "src": "/assets/cases/unreal/valorant-01.png",
+        "alt": "无畏契约源能国际邀请赛视觉 1"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/unreal/valorant-02.png",
+        "alt": "无畏契约源能国际邀请赛视觉 2"
+      }
+    ],
+    "masonryMedia": [
+      {
+        "type": "image",
+        "src": "/assets/cases/unreal/valorant-01.png",
+        "alt": "无畏契约源能国际邀请赛"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/unreal/valorant-02.png",
+        "alt": "无畏契约源能国际邀请赛"
+      }
+    ]
+  },
+  {
+    "id": "tft-open",
+    "title": "云顶金铲铲公开赛动态预览",
+    "category": "虚幻引擎",
+    "year": "2026",
+    "summary": "以三维动态和赛事包装语言串联多平台视觉内容，形成完整动态预览体验。",
+    "tags": [
+      "三维视频",
+      "动态预览",
+      "赛事包装"
+    ],
+    "cover": "/assets/cases/unreal/tft-worlds.jpg",
+    "featured": false,
+    "featuredOrder": 8,
+    "masonry": true,
+    "masonryOrder": 8,
+    "masonryImages": [
+      "/assets/cases/unreal/tft-worlds.jpg"
+    ],
+    "detailMedia": [
+      {
+        "type": "video",
+        "src": "/assets/cases/unreal/tft-worlds.mp4",
+        "poster": "/assets/cases/unreal/tft-worlds.jpg",
+        "alt": "云顶金铲铲世界赛动态预览"
+      },
+      {
+        "type": "video",
+        "src": "/assets/cases/unreal/tft.mp4",
+        "poster": "/assets/cases/unreal/tft-worlds.jpg",
+        "alt": "云顶之弈动态预览"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/unreal/tft-worlds.jpg",
+        "alt": "云顶金铲铲公开赛封面"
+      }
+    ],
+    "masonryMedia": [
+      {
+        "type": "image",
+        "src": "/assets/cases/unreal/tft-worlds.jpg",
+        "alt": "云顶金铲铲公开赛动态预览"
+      }
+    ]
+  },
+  {
+    "id": "case-1782502504954",
+    "title": "第五人格弹幕互动",
+    "category": "KEY VISUAL",
+    "year": "2026",
+    "summary": "第五人格日本IVS，在比赛现场结合AR，制作弹幕互动",
+    "tags": [
+      "虚幻引擎"
+    ],
+    "cover": "/assets/cases/case-1782502504954/1782502577187-asset.png",
+    "featured": false,
+    "featuredOrder": 9,
+    "masonry": true,
+    "masonryOrder": 9,
+    "masonryImages": [],
+    "masonryMedia": [
+      {
+        "type": "video",
+        "src": "/assets/cases/case-1782502504954/1782502598581-asset.mp4",
+        "poster": "/assets/cases/case-1782502504954/1782502577187-asset.png",
+        "alt": "case-1782502504954"
+      }
+    ],
+    "detailMedia": [
+      {
+        "type": "video",
+        "src": "/assets/cases/case-1782502504954/1782502586813-asset.mp4",
+        "poster": "/assets/cases/case-1782502504954/1782502577187-asset.png",
+        "alt": "case-1782502504954"
+      }
+    ]
+  }
+]
