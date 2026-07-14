@@ -10,9 +10,9 @@ function Login() {
     if (isAdminAuthed()) window.location.href = "/admin";
   }, []);
 
-  const onSubmit = (event: FormEvent) => {
+  const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    if (loginAdmin(username, password)) {
+    if (await loginAdmin(username, password)) {
       window.location.href = "/admin";
       return;
     }

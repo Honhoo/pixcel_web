@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { isAdminAuthed, logoutAdmin } from "./auth";
+import { checkAdminSession, logoutAdmin } from "./auth";
 import type { CaseStudy, Category, MasonryMediaItem, MediaItem } from "./cases";
 
 const emptyCase: CaseStudy = {
@@ -56,7 +56,9 @@ function Admin() {
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    if (!isAdminAuthed()) window.location.href = "/login";
+    checkAdminSession().then((ok) => {
+      if (!ok) window.location.href = "/login";
+    });
   }, []);
 
   const sortedCases = useMemo(

@@ -5,15 +5,11 @@ import App from "./App";
 import Login from "./Login";
 import "./styles.css";
 
-const enableLocalAdmin = import.meta.env.DEV;
-
-const Root = enableLocalAdmin
-  ? window.location.pathname.startsWith("/admin")
-    ? Admin
-    : window.location.pathname.startsWith("/login")
-      ? Login
-      : App
-  : App;
+const Root = window.location.pathname.startsWith("/admin")
+  ? Admin
+  : window.location.pathname.startsWith("/login")
+    ? Login
+    : App;
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

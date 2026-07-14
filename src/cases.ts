@@ -42,3 +42,13 @@ export const categories: Array<"全部" | Category> = [
 ];
 
 export const caseStudies = workCases as CaseStudy[];
+
+export async function loadCaseStudies() {
+  try {
+    const response = await fetch(`/content/workCases.json?v=${Date.now()}`, { cache: "no-store" });
+    if (!response.ok) throw new Error("content unavailable");
+    return (await response.json()) as CaseStudy[];
+  } catch {
+    return caseStudies;
+  }
+}

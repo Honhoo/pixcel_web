@@ -1,9 +1,10 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import BorderGlow from "./BorderGlow";
 import Grainient from "./Grainient";
-import { caseStudies, categories, type CaseStudy, type Category, type MasonryMediaItem } from "./cases";
+import { caseStudies as fallbackCaseStudies, categories, loadCaseStudies, type CaseStudy, type Category, type MasonryMediaItem } from "./cases";
 import { isAdminAuthed } from "./auth";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -73,24 +74,47 @@ type CaseMasonryItem = {
   media: MasonryMediaItem;
 };
 
+type ActiveCaseState = {
+  item: CaseStudy;
+  initialMediaSrc?: string;
+};
+
+const heroServices = ["视觉设计", "品牌包装", "虚幻引擎", "媒体传播"];
+
+const businessContacts = [
+  {
+    id: "huanghao",
+    name: "黄浩",
+    phone: "13122030715",
+    email: "13122030715@163.com",
+  },
+  {
+    id: "zhangzimeng",
+    name: "张梓萌",
+    phone: "15651458178",
+    email: "m15651458178@163.com",
+  },
+];
+
 function App() {
-  const [activeCase, setActiveCase] = useState<CaseStudy | null>(null);
+  const [activeCase, setActiveCase] = useState<ActiveCaseState | null>(null);
   const [adminAuthed, setAdminAuthed] = useState(false);
+  const [caseStudyItems, setCaseStudyItems] = useState<CaseStudy[]>(fallbackCaseStudies);
   const [scrollRatio, setScrollRatio] = useState(0);
   const [galleryCategory, setGalleryCategory] = useState<"全部" | Category>("全部");
   const [galleryPage, setGalleryPage] = useState(1);
-  const [copiedContact, setCopiedContact] = useState<"phone" | "email" | null>(null);
+  const [copiedContact, setCopiedContact] = useState<string | null>(null);
 
   const featuredCases = useMemo(
     () =>
-      [...caseStudies]
+      [...caseStudyItems]
         .filter((item) => item.featured)
         .sort((a, b) => a.featuredOrder - b.featuredOrder),
-    [],
+    [caseStudyItems],
   );
 
   const caseMasonryItems = useMemo<CaseMasonryItem[]>(() => {
-    return [...caseStudies]
+    return [...caseStudyItems]
       .filter((caseStudy) => caseStudy.masonry)
       .sort((a, b) => a.masonryOrder - b.masonryOrder)
       .flatMap((caseStudy) => {
@@ -112,7 +136,7 @@ function App() {
             },
           }));
       });
-  }, []);
+  }, [caseStudyItems]);
 
   const filteredMasonryItems = useMemo(() => {
     if (galleryCategory === "全部") return caseMasonryItems;
@@ -131,10 +155,14 @@ function App() {
     setGalleryPage(1);
   };
 
-  const copyContact = async (type: "phone" | "email", value: string) => {
+  const openCase = (item: CaseStudy, initialMediaSrc?: string) => {
+    setActiveCase({ item, initialMediaSrc });
+  };
+
+  const copyContact = async (key: string, value: string) => {
     try {
       await navigator.clipboard.writeText(value);
-      setCopiedContact(type);
+      setCopiedContact(key);
       window.setTimeout(() => setCopiedContact(null), 1600);
     } catch {
       setCopiedContact(null);
@@ -151,6 +179,7 @@ function App() {
       gsap.set(".site-header", { y: -28, opacity: 0 });
       gsap.set(".hero-video-bg", { scale: 1.16, filter: "blur(10px) brightness(0.62)" });
       gsap.set(".hero-topline span", { y: -18, opacity: 0 });
+      gsap.set(".hero-service-item", { x: -26, opacity: 0, clipPath: "inset(0 100% 0 0)" });
       gsap.set(".hero-poster-content h1", {
         clipPath: "inset(0 100% 0 0)",
         scale: 1.16,
@@ -171,13 +200,14 @@ function App() {
           0.95,
         )
         .to(".hero-chinese-title", { clipPath: "inset(0% 0 0 0)", y: 0, opacity: 1, duration: 1.05 }, 1.28)
+        .to(".hero-service-item", { x: 0, opacity: 1, clipPath: "inset(0 0% 0 0)", duration: 0.9, stagger: 0.09 }, 1.36)
         .to(".hero-bottom-left, .hero-bottom-center, .hero-bottom-right", { y: 0, opacity: 1, duration: 1.0, stagger: 0.12 }, 1.55);
 
       gsap.utils.toArray<HTMLElement>(".motion-section").forEach((section) => {
         const labels = section.querySelectorAll(".section-label");
         const titles = section.querySelectorAll(".section-heading h2, .featured-heading-inline h3, .business-contact h2, .manifesto-block h2");
-        const copy = section.querySelectorAll(".section-heading p, .manifesto-copy p, .business-contact-main > p");
-        const cards = section.querySelectorAll(".service-glow, .manifesto-glow, .featured-case-card, .masonry-image, .business-contact-actions a, .manifesto-pillar");
+        const copy = section.querySelectorAll(".section-heading p, .manifesto-copy p, .business-contact-intro");
+        const cards = section.querySelectorAll(".service-glow, .manifesto-glow, .featured-case-card, .masonry-image, .business-contact-card, .manifesto-pillar");
         const logoMarquee = section.querySelectorAll(".logo-marquee");
         const images = section.querySelectorAll(".case-image img, .masonry-image img, .masonry-image video");
 
@@ -249,6 +279,10 @@ function App() {
   }, []);
 
   useEffect(() => {
+    loadCaseStudies().then(setCaseStudyItems);
+  }, []);
+
+  useEffect(() => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReducedMotion) return;
 
@@ -277,22 +311,14 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setActiveCase(null);
-    };
-
     document.body.classList.toggle("modal-open", Boolean(activeCase));
-    window.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.body.classList.remove("modal-open");
-      window.removeEventListener("keydown", onKeyDown);
-    };
+    return () => document.body.classList.remove("modal-open");
   }, [activeCase]);
 
   const heroStyle = {
     "--hero-progress": scrollRatio.toString(),
   } as React.CSSProperties;
-  const showLocalAdminEntry = import.meta.env.DEV;
+  const showLocalAdminEntry = true;
 
   return (
     <>
@@ -331,6 +357,14 @@ function App() {
           <div className="hero-poster-content">
             <h1>VISION PIXEL</h1>
             <p className="hero-chinese-title">微境像素</p>
+            <div className="hero-service-list" aria-label="核心业务展示">
+              {heroServices.map((service, index) => (
+                <span className="hero-service-item" key={service}>
+                  <small>{String(index + 1).padStart(2, "0")}</small>
+                  <strong>{service}</strong>
+                </span>
+              ))}
+            </div>
           </div>
 
           <div className="hero-bottom-left">
@@ -516,7 +550,7 @@ function App() {
             <div className="work-block">
               <div className="featured-case-grid">
                 {featuredCases.map((item) => (
-                  <FeaturedCaseCard item={item} key={item.id} onOpen={setActiveCase} />
+                  <FeaturedCaseCard item={item} key={item.id} onOpen={openCase} />
                 ))}
               </div>
             </div>
@@ -539,7 +573,7 @@ function App() {
               </div>
               <div className="case-masonry" aria-label="分类展示">
                 {pagedMasonryItems.map((item, index) => (
-                  <MasonryTile item={item} key={`${item.caseStudy.id}-${item.media.src}-${index}`} onOpen={setActiveCase} />
+                  <MasonryTile item={item} key={`${item.caseStudy.id}-${item.media.src}-${index}`} onOpen={openCase} />
                 ))}
               </div>
               {totalGalleryPages > 1 && (
@@ -578,21 +612,28 @@ function App() {
             <h2>商务&需求</h2>
           </div>
           <div className="business-contact-main">
-            <p>项目咨询、商务合作、视觉需求请联系</p>
-            <strong>黄浩</strong>
-            <div className="business-contact-actions">
-              <div className="contact-action-group">
-                <a href="tel:13122030715">电话 / 微信：13122030715</a>
-                <button type="button" onClick={() => copyContact("phone", "13122030715")}>
-                  {copiedContact === "phone" ? "已复制" : "复制"}
-                </button>
-              </div>
-              <div className="contact-action-group">
-                <a href="mailto:13122030715@163.com">Email：13122030715@163.com</a>
-                <button type="button" onClick={() => copyContact("email", "13122030715@163.com")}>
-                  {copiedContact === "email" ? "已复制" : "复制"}
-                </button>
-              </div>
+            <p className="business-contact-intro">项目咨询、商务合作、视觉需求请联系</p>
+            <div className="business-contact-cards">
+              {businessContacts.map((contact) => (
+                <article className="business-contact-card" key={contact.id}>
+                  <span>CONTACT</span>
+                  <strong>{contact.name}</strong>
+                  <div className="business-contact-actions">
+                    <div className="contact-action-group">
+                      <a href={`tel:${contact.phone}`}>电话 / 微信：{contact.phone}</a>
+                      <button type="button" onClick={() => copyContact(`${contact.id}-phone`, contact.phone)}>
+                        {copiedContact === `${contact.id}-phone` ? "已复制" : "复制"}
+                      </button>
+                    </div>
+                    <div className="contact-action-group">
+                      <a href={`mailto:${contact.email}`}>Email：{contact.email}</a>
+                      <button type="button" onClick={() => copyContact(`${contact.id}-email`, contact.email)}>
+                        {copiedContact === `${contact.id}-email` ? "已复制" : "复制"}
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              ))}
             </div>
           </div>
         </div>
@@ -600,7 +641,13 @@ function App() {
         <p>Pixel-level visual expression for brands, events and digital experiences.</p>
       </footer>
 
-      {activeCase && <CaseModal item={activeCase} onClose={() => setActiveCase(null)} />}
+      {activeCase && (
+        <CaseModal
+          initialMediaSrc={activeCase.initialMediaSrc}
+          item={activeCase.item}
+          onClose={() => setActiveCase(null)}
+        />
+      )}
     </>
   );
 }
@@ -634,17 +681,107 @@ function LogoTrack({ logos, reverse = false }: { logos: typeof gameLogos; revers
 }
 
 function FeaturedCaseCard({ item, onOpen }: { item: CaseStudy; onOpen: (item: CaseStudy) => void }) {
+  const cardRef = useRef<HTMLButtonElement | null>(null);
+  const floatRef = useRef<HTMLDivElement | null>(null);
+  const frameRef = useRef<number | null>(null);
+  const [isFloating, setIsFloating] = useState(false);
+  const [floatActive, setFloatActive] = useState(false);
+
+  const updateTilt = (event: React.PointerEvent<HTMLButtonElement>) => {
+    if (event.pointerType !== "mouse") return;
+    const card = cardRef.current;
+    if (!card) return;
+
+    if (frameRef.current) window.cancelAnimationFrame(frameRef.current);
+    frameRef.current = window.requestAnimationFrame(() => {
+      const rect = card.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width;
+      const y = (event.clientY - rect.top) / rect.height;
+      const boundedX = Math.min(Math.max(x, 0), 1);
+      const boundedY = Math.min(Math.max(y, 0), 1);
+      const rotateX = (0.5 - boundedY) * 24;
+      const rotateY = (boundedX - 0.5) * 30;
+      const imageX = (0.5 - boundedX) * 34;
+      const imageY = (0.5 - boundedY) * 26;
+
+      card.style.setProperty("--mx", `${boundedX * 100}%`);
+      card.style.setProperty("--my", `${boundedY * 100}%`);
+      card.style.setProperty("--rx", `${rotateX.toFixed(2)}deg`);
+      card.style.setProperty("--ry", `${rotateY.toFixed(2)}deg`);
+      card.style.setProperty("--px", `${imageX.toFixed(2)}px`);
+      card.style.setProperty("--py", `${imageY.toFixed(2)}px`);
+
+      const floatingCard = floatRef.current;
+      if (!floatingCard) return;
+      floatingCard.style.left = `${rect.left}px`;
+      floatingCard.style.top = `${rect.top}px`;
+      floatingCard.style.width = `${rect.width}px`;
+      floatingCard.style.height = `${rect.height}px`;
+      floatingCard.style.setProperty("--mx", `${boundedX * 100}%`);
+      floatingCard.style.setProperty("--my", `${boundedY * 100}%`);
+      floatingCard.style.setProperty("--rx", `${rotateX.toFixed(2)}deg`);
+      floatingCard.style.setProperty("--ry", `${rotateY.toFixed(2)}deg`);
+      floatingCard.style.setProperty("--px", `${imageX.toFixed(2)}px`);
+      floatingCard.style.setProperty("--py", `${imageY.toFixed(2)}px`);
+    });
+  };
+
+  const startFloating = (event: React.PointerEvent<HTMLButtonElement>) => {
+    if (event.pointerType !== "mouse") return;
+    setIsFloating(true);
+    setFloatActive(false);
+    updateTilt(event);
+    window.requestAnimationFrame(() => setFloatActive(true));
+  };
+
+  const resetTilt = () => {
+    if (frameRef.current) window.cancelAnimationFrame(frameRef.current);
+    const card = cardRef.current;
+    if (!card) return;
+    card.style.setProperty("--mx", "50%");
+    card.style.setProperty("--my", "50%");
+    card.style.setProperty("--rx", "0deg");
+    card.style.setProperty("--ry", "0deg");
+    card.style.setProperty("--px", "0px");
+    card.style.setProperty("--py", "0px");
+    setFloatActive(false);
+    setIsFloating(false);
+  };
+
   return (
-    <button className="featured-case-card" onClick={() => onOpen(item)}>
-      <span className="case-image">
-        <img src={item.cover} alt="" loading="lazy" />
-      </span>
-      <small>{item.title}</small>
-    </button>
+    <>
+      <button
+        className={`featured-case-card ${isFloating ? "is-floating-source" : ""}`}
+        onClick={() => onOpen(item)}
+        onPointerEnter={startFloating}
+        onPointerLeave={resetTilt}
+        onPointerMove={updateTilt}
+        ref={cardRef}
+      >
+        <span className="featured-case-surface">
+          <span className="case-image">
+            <img src={item.cover} alt="" loading="lazy" />
+          </span>
+          <small>{item.title}</small>
+        </span>
+      </button>
+      {isFloating &&
+        createPortal(
+          <div className={`featured-case-float ${floatActive ? "is-active" : ""}`} ref={floatRef} aria-hidden="true">
+            <span className="featured-case-surface">
+              <span className="case-image">
+                <img src={item.cover} alt="" />
+              </span>
+              <small>{item.title}</small>
+            </span>
+          </div>,
+          document.body,
+        )}
+    </>
   );
 }
 
-function MasonryTile({ item, onOpen }: { item: CaseMasonryItem; onOpen: (item: CaseStudy) => void }) {
+function MasonryTile({ item, onOpen }: { item: CaseMasonryItem; onOpen: (item: CaseStudy, initialMediaSrc?: string) => void }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const playPreview = () => {
@@ -664,7 +801,7 @@ function MasonryTile({ item, onOpen }: { item: CaseMasonryItem; onOpen: (item: C
   return (
     <button
       className={`masonry-image ${item.media.type === "video" ? "is-video" : ""}`}
-      onClick={() => onOpen(item.caseStudy)}
+      onClick={() => onOpen(item.caseStudy, item.media.src)}
       onMouseEnter={playPreview}
       onMouseLeave={stopPreview}
       aria-label={item.caseStudy.title}
@@ -684,8 +821,51 @@ function MasonryTile({ item, onOpen }: { item: CaseMasonryItem; onOpen: (item: C
   );
 }
 
-function CaseModal({ item, onClose }: { item: CaseStudy; onClose: () => void }) {
-  const detailMedia = item.detailMedia.length > 0 ? item.detailMedia : [{ type: "image" as const, src: item.cover, alt: item.title }];
+function CaseModal({ initialMediaSrc, item, onClose }: { initialMediaSrc?: string; item: CaseStudy; onClose: () => void }) {
+  const [previewImage, setPreviewImage] = useState<{ src: string; alt: string } | null>(null);
+  const mediaRefs = useRef<Record<string, HTMLElement | null>>({});
+  const fallbackDetailMedia = item.detailMedia.length > 0 ? item.detailMedia : [{ type: "image" as const, src: item.cover, alt: item.title }];
+  const masonryMedia: MasonryMediaItem[] =
+    item.masonryMedia && item.masonryMedia.length > 0
+      ? item.masonryMedia
+      : item.masonryImages.length > 0
+        ? item.masonryImages.map((src) => ({ type: "image" as const, src, alt: item.title }))
+        : [{ type: "image" as const, src: item.cover, alt: item.title }];
+  const initialMasonryMedia = initialMediaSrc ? masonryMedia.find((media) => media.src === initialMediaSrc) : undefined;
+  const detailMedia =
+    initialMediaSrc && !fallbackDetailMedia.some((media) => media.src === initialMediaSrc) && initialMasonryMedia
+      ? [
+          {
+            type: initialMasonryMedia.type,
+            src: initialMasonryMedia.src,
+            poster: initialMasonryMedia.poster || (initialMasonryMedia.type === "video" ? item.cover : undefined),
+            alt: initialMasonryMedia.alt || item.title,
+          },
+          ...fallbackDetailMedia,
+        ]
+      : fallbackDetailMedia;
+
+  useEffect(() => {
+    if (!initialMediaSrc) return;
+    const timer = window.setTimeout(() => {
+      mediaRefs.current[initialMediaSrc]?.scrollIntoView({ block: "center", behavior: "smooth" });
+    }, 120);
+    return () => window.clearTimeout(timer);
+  }, [initialMediaSrc]);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      if (previewImage) {
+        setPreviewImage(null);
+        return;
+      }
+      onClose();
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [onClose, previewImage]);
 
   return (
     <div className="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="case-title">
@@ -716,16 +896,40 @@ function CaseModal({ item, onClose }: { item: CaseStudy; onClose: () => void }) 
                 preload="metadata"
                 poster={media.poster}
                 key={media.src}
+                ref={(node) => {
+                  mediaRefs.current[media.src] = node;
+                }}
                 aria-label={media.alt}
               >
                 <source src={media.src} type="video/mp4" />
               </video>
             ) : (
-              <img src={media.src} alt={media.alt} key={media.src} loading="lazy" />
+              <button
+                className="detail-image-button"
+                key={media.src}
+                ref={(node) => {
+                  mediaRefs.current[media.src] = node;
+                }}
+                type="button"
+                onClick={() => setPreviewImage({ src: media.src, alt: media.alt })}
+              >
+                <img src={media.src} alt={media.alt} loading="lazy" />
+              </button>
             ),
           )}
         </div>
       </article>
+      {previewImage && (
+        <div className="image-lightbox" role="dialog" aria-modal="true" aria-label="图片大图预览">
+          <button className="image-lightbox-scrim" type="button" onClick={() => setPreviewImage(null)} aria-label="关闭图片预览" />
+          <figure>
+            <img src={previewImage.src} alt={previewImage.alt} />
+            <button className="close-button" type="button" onClick={() => setPreviewImage(null)} aria-label="关闭图片预览">
+              ×
+            </button>
+          </figure>
+        </div>
+      )}
     </div>
   );
 }
