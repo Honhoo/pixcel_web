@@ -342,7 +342,7 @@ video {
   min-height: 100svh;
   display: block;
   padding: 0;
-  background: #050505;
+  background: #050505 url("/assets/brand/hero-motion.jpg") center / cover;
   isolation: isolate;
 }
 
@@ -536,7 +536,7 @@ video {
 .hero-actions a {
   padding: 0 20px;
   background: var(--acid);
-  color: #fff;
+  color: #071000;
   text-decoration: none;
 }
 
@@ -836,6 +836,7 @@ video {
 }
 
 .game-logo {
+  --logo-y: 0px;
   width: clamp(140px, 13vw, 210px);
   height: clamp(72px, 7vw, 104px);
   display: grid;
@@ -854,13 +855,14 @@ video {
   object-fit: contain;
   filter: grayscale(1) brightness(1.5);
   opacity: 0.86;
+  transform: translateY(var(--logo-y));
   transition: filter 180ms ease, opacity 180ms ease, transform 180ms ease;
 }
 
 .game-logo:hover img {
   filter: none;
   opacity: 1;
-  transform: scale(1.04);
+  transform: translateY(var(--logo-y)) scale(1.04);
 }
 
 .section-heading {
@@ -1974,7 +1976,7 @@ video {
 
 .admin-asset {
   display: grid;
-  grid-template-columns: 110px minmax(0, 1fr) auto auto;
+  grid-template-columns: 108px 110px minmax(0, 1fr) auto;
   gap: 10px;
   align-items: center;
   padding: 10px;
@@ -1984,7 +1986,7 @@ video {
 }
 
 .admin-asset.detail {
-  grid-template-columns: 110px minmax(0, 1fr) minmax(0, 1fr) auto auto;
+  grid-template-columns: 108px 110px minmax(180px, 1fr) minmax(220px, 0.9fr) auto;
 }
 
 .admin-asset img,
@@ -1994,6 +1996,27 @@ video {
   object-fit: cover;
   border-radius: 6px;
   background: #000;
+}
+
+.admin-asset-order {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  align-items: center;
+}
+
+.admin-asset-order strong {
+  grid-column: 1 / -1;
+  color: var(--acid);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.admin-asset-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
 }
 
 .admin-asset span {
@@ -2007,6 +2030,11 @@ video {
 .admin-asset button {
   padding: 0 10px;
   white-space: nowrap;
+}
+
+.admin-asset button:disabled {
+  cursor: not-allowed;
+  opacity: 0.38;
 }
 
 .login-page {
@@ -2309,15 +2337,16 @@ video {
 
 @media (max-width: 680px) {
   .site-header {
-    padding: 0 16px;
+    height: 64px;
+    padding: 0 14px;
   }
 
   .brand-mark {
-    width: 106px;
+    width: 96px;
   }
 
   .site-nav {
-    gap: 10px;
+    gap: 9px;
   }
 
   .site-nav a {
@@ -2331,21 +2360,37 @@ video {
   }
 
   .hero.hero-video {
-    min-height: 100svh;
-    padding: 0;
+    min-height: auto;
+    padding: 82px 16px 26px;
   }
 
   .hero-video-bg {
+    z-index: 0;
+    display: block;
     object-position: center;
+    opacity: 0.62;
+  }
+
+  .hero-vignette {
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.18) 42%, rgba(0, 0, 0, 0.72) 100%),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.5), transparent 72%);
+  }
+
+  .hero-grain {
+    opacity: 0.14;
   }
 
   .hero-topline {
-    top: 86px;
-    left: 16px;
-    right: 16px;
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    z-index: 3;
     display: flex;
     justify-content: space-between;
     gap: 14px;
+    margin-bottom: 14px;
   }
 
   .hero-topline span:nth-child(2) {
@@ -2354,30 +2399,38 @@ video {
   }
 
   .hero-poster-content {
-    top: 128px;
-    left: 16px;
-    right: 16px;
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    z-index: 3;
   }
 
   .hero-poster-content h1 {
-    font-size: clamp(52px, 20vw, 92px);
+    width: auto;
+    max-width: 100%;
+    font-size: clamp(44px, 15.6vw, 64px);
     line-height: 0.84;
+    overflow-wrap: normal;
   }
 
   .hero-chinese-title {
-    font-size: clamp(28px, 11vw, 48px);
+    margin-top: 6px;
+    font-size: clamp(26px, 8vw, 36px);
   }
 
   .hero-service-list {
-    width: min(280px, 82vw);
-    gap: 6px;
-    margin-top: 16px;
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+    margin-top: 12px;
   }
 
   .hero-service-item {
     min-height: 34px;
-    grid-template-columns: 34px 1fr;
-    padding: 7px 10px;
+    grid-template-columns: 28px 1fr;
+    gap: 8px;
+    padding: 7px 9px;
   }
 
   .hero-service-item strong {
@@ -2386,41 +2439,49 @@ video {
 
   .hero-bottom-left,
   .hero-bottom-center {
-    left: 16px;
-    right: 16px;
+    position: relative;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    z-index: 3;
     width: auto;
     transform: none;
     text-align: left;
   }
 
   .hero-bottom-left {
-    bottom: 122px;
+    display: block;
+    margin-top: 12px;
   }
 
   .hero-bottom-center {
-    bottom: 42px;
+    margin: 12px 0 0;
+    font-size: 12px;
+    line-height: 1.55;
   }
 
   .hero-bottom-left strong {
-    font-size: clamp(52px, 17vw, 78px);
+    font-size: clamp(34px, 11vw, 46px);
   }
 
   .hero-bottom-left > span {
-    max-width: 260px;
-    font-size: 14px;
+    max-width: 190px;
+    margin: 0 0 4px;
+    font-size: 11px;
+    line-height: 1.32;
   }
 
   .hero-actions {
     gap: 10px;
-    margin-top: 18px;
+    margin-top: 0;
   }
 
   .hero-actions a,
   .hero-actions span {
-    min-height: 40px;
-    padding-left: 14px;
-    padding-right: 14px;
-    font-size: 12px;
+    min-height: 36px;
+    padding-left: 12px;
+    padding-right: 12px;
+    font-size: 11px;
   }
 
   .hero-logo {
@@ -2428,9 +2489,24 @@ video {
   }
 
   .hero-panel,
-  .service-grid,
   .featured-case-grid {
     grid-template-columns: 1fr;
+  }
+
+  .services {
+    order: 1;
+  }
+
+  .work {
+    order: 2;
+  }
+
+  .service-content {
+    order: 3;
+  }
+
+  .team-advantages {
+    order: 4;
   }
 
   .hero-card:nth-child(even) {
@@ -2442,15 +2518,157 @@ video {
   }
 
   .section {
-    padding-top: 42px;
-    padding-bottom: 42px;
+    padding-top: 28px;
+    padding-bottom: 28px;
     padding-left: 16px;
     padding-right: 16px;
   }
 
+  .below-hero-shell > .section {
+    max-width: none;
+  }
+
+  .team-advantages {
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+
+  .studio-manifesto {
+    gap: 12px;
+    padding: 0;
+  }
+
+  .manifesto-block {
+    padding: 18px;
+  }
+
+  .manifesto-block h2 {
+    font-size: clamp(28px, 11vw, 42px);
+  }
+
   .manifesto-copy p {
-    font-size: clamp(15px, 4vw, 18px);
-    line-height: 1.78;
+    font-size: 15px;
+    line-height: 1.72;
+  }
+
+  .manifesto-copy p + p {
+    margin-top: 10px;
+  }
+
+  .manifesto-pillars {
+    margin-top: 14px;
+  }
+
+  .manifesto-pillar {
+    min-height: 38px;
+    padding: 8px 10px;
+  }
+
+  .section-heading {
+    gap: 14px;
+  }
+
+  .section-heading h2 {
+    font-size: clamp(36px, 14vw, 54px);
+  }
+
+  .section-heading p {
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  .service-content {
+    padding-top: 20px;
+    padding-bottom: 22px;
+  }
+
+  .services {
+    padding-top: 26px;
+  }
+
+  .service-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .service-glow {
+    min-height: 112px;
+  }
+
+  .service-card {
+    min-height: 112px;
+    padding: 12px;
+  }
+
+  .service-card h3 {
+    margin: 28px 0 8px;
+    font-size: 15px;
+    line-height: 1.05;
+  }
+
+  .service-card p {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 10.5px;
+    line-height: 1.42;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  .work {
+    padding-top: 32px;
+  }
+
+  .work .section-heading {
+    margin-bottom: 16px;
+  }
+
+  .work .featured-heading-inline {
+    display: none;
+  }
+
+  .work-block + .work-block {
+    margin-top: 32px;
+  }
+
+  .work-block-heading h3,
+  .featured-heading-inline h3 {
+    font-size: clamp(28px, 10vw, 42px);
+  }
+
+  .featured-case-grid {
+    gap: 10px;
+    perspective: none;
+  }
+
+  .featured-case-card,
+  .featured-case-card:hover,
+  .featured-case-card.is-floating-source {
+    transform: none;
+  }
+
+  .featured-case-card::before,
+  .featured-case-surface::before,
+  .featured-case-float {
+    display: none;
+  }
+
+  .featured-case-card.is-floating-source .featured-case-surface,
+  .featured-case-card:hover .featured-case-surface,
+  .featured-case-surface {
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .featured-case-card:hover .case-image img {
+    filter: none;
+    transform: scale(1.03);
+  }
+
+  .featured-case-card:hover small {
+    transform: none;
   }
 
   .logo-marquee {

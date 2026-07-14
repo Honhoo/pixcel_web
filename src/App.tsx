@@ -36,37 +36,37 @@ const services = [
 
 const gameLogos = [
   { name: "HOS Nexus", src: "/assets/service-games/game-01.png" },
-  { name: "QQ飞车", src: "/assets/service-games/game-02.png" },
+  { name: "QQ飞车", src: "/assets/service-games/game-02.png", offsetY: "-4px" },
   { name: "VALORANT", src: "/assets/service-games/game-03.png" },
-  { name: "暗黑破坏神", src: "/assets/service-games/game-04.png" },
-  { name: "百闻牌", src: "/assets/service-games/game-05.png" },
-  { name: "部落冲突", src: "/assets/service-games/game-06.png" },
-  { name: "穿越火线", src: "/assets/service-games/game-07.png" },
-  { name: "大话西游2经典版", src: "/assets/service-games/game-08.png" },
-  { name: "大话西游", src: "/assets/service-games/game-09.png" },
-  { name: "大唐无双", src: "/assets/service-games/game-10.png" },
-  { name: "蛋仔派对", src: "/assets/service-games/game-11.png" },
-  { name: "第五人格", src: "/assets/service-games/game-12.png" },
-  { name: "巅峰极速", src: "/assets/service-games/game-13.png" },
-  { name: "光遇", src: "/assets/service-games/game-14.png" },
-  { name: "哈利波特", src: "/assets/service-games/game-15.png" },
-  { name: "和平精英", src: "/assets/service-games/game-16.png" },
-  { name: "荒野行动", src: "/assets/service-games/game-17.png" },
-  { name: "皇室战争", src: "/assets/service-games/game-18.png" },
-  { name: "决战平安京", src: "/assets/service-games/game-19.png" },
-  { name: "狼人杀", src: "/assets/service-games/game-20.png" },
-  { name: "炉石传说", src: "/assets/service-games/game-21.png" },
-  { name: "率土之滨", src: "/assets/service-games/game-22.png" },
-  { name: "三国杀", src: "/assets/service-games/game-23.png" },
+  { name: "暗黑破坏神", src: "/assets/service-games/game-04.png", offsetY: "-2px" },
+  { name: "百闻牌", src: "/assets/service-games/game-05.png", offsetY: "-2px" },
+  { name: "部落冲突", src: "/assets/service-games/game-06.png", offsetY: "-1px" },
+  { name: "穿越火线", src: "/assets/service-games/game-07.png", offsetY: "-1px" },
+  { name: "大话西游2经典版", src: "/assets/service-games/game-08.png", offsetY: "2px" },
+  { name: "大话西游", src: "/assets/service-games/game-09.png", offsetY: "-1px" },
+  { name: "大唐无双", src: "/assets/service-games/game-10.png", offsetY: "-1px" },
+  { name: "蛋仔派对", src: "/assets/service-games/game-11.png", offsetY: "-2px" },
+  { name: "第五人格", src: "/assets/service-games/game-12.png", offsetY: "-2px" },
+  { name: "巅峰极速", src: "/assets/service-games/game-13.png", offsetY: "-3px" },
+  { name: "光遇", src: "/assets/service-games/game-14.png", offsetY: "-6px" },
+  { name: "哈利波特", src: "/assets/service-games/game-15.png", offsetY: "-3px" },
+  { name: "和平精英", src: "/assets/service-games/game-16.png", offsetY: "-2px" },
+  { name: "荒野行动", src: "/assets/service-games/game-17.png", offsetY: "-2px" },
+  { name: "皇室战争", src: "/assets/service-games/game-18.png", offsetY: "-2px" },
+  { name: "决战平安京", src: "/assets/service-games/game-19.png", offsetY: "-1px" },
+  { name: "狼人杀", src: "/assets/service-games/game-20.png", offsetY: "-3px" },
+  { name: "炉石传说", src: "/assets/service-games/game-21.png", offsetY: "-5px" },
+  { name: "率土之滨", src: "/assets/service-games/game-22.png", offsetY: "-2px" },
+  { name: "三国杀", src: "/assets/service-games/game-23.png", offsetY: "-3px" },
   { name: "三角洲行动", src: "/assets/service-games/game-24.png" },
   { name: "实况足球", src: "/assets/service-games/game-25.png" },
-  { name: "守望先锋", src: "/assets/service-games/game-26.png" },
-  { name: "王者荣耀", src: "/assets/service-games/game-27.png" },
-  { name: "无畏契约", src: "/assets/service-games/game-28.png" },
-  { name: "星际争霸2", src: "/assets/service-games/game-29.png" },
-  { name: "英雄联盟", src: "/assets/service-games/game-30.png" },
-  { name: "影之诗", src: "/assets/service-games/game-31.png" },
-  { name: "游戏王", src: "/assets/service-games/game-32.png" },
+  { name: "守望先锋", src: "/assets/service-games/game-26.png", offsetY: "-5px" },
+  { name: "王者荣耀", src: "/assets/service-games/game-27.png", offsetY: "-6px" },
+  { name: "无畏契约", src: "/assets/service-games/game-28.png", offsetY: "-3px" },
+  { name: "星际争霸2", src: "/assets/service-games/game-29.png", offsetY: "-3px" },
+  { name: "英雄联盟", src: "/assets/service-games/game-30.png", offsetY: "-3px" },
+  { name: "影之诗", src: "/assets/service-games/game-31.png", offsetY: "-6px" },
+  { name: "游戏王", src: "/assets/service-games/game-32.png", offsetY: "-5px" },
 ];
 
 type CaseMasonryItem = {
@@ -342,7 +342,7 @@ function App() {
       <main id="top">
         <section className="hero hero-video" style={heroStyle}>
           <div className="opening-curtain" aria-hidden="true" />
-          <video className="hero-video-bg" autoPlay muted loop playsInline preload="auto">
+          <video className="hero-video-bg" autoPlay muted loop playsInline preload="auto" poster="/assets/brand/hero-motion.jpg">
             <source src="/assets/brand/logo-showcase-2.mp4" type="video/mp4" />
           </video>
           <div className="hero-vignette" aria-hidden="true" />
@@ -368,10 +368,8 @@ function App() {
           </div>
 
           <div className="hero-bottom-left">
-            <strong>10+</strong>
-            <span>Years of visual design experience</span>
             <div className="hero-actions">
-              <a href="#cases">开始查看</a>
+              <a href="#cases">查看案例</a>
               <span>vision pixel studio</span>
             </div>
           </div>
@@ -671,7 +669,10 @@ function LogoTrack({ logos, reverse = false }: { logos: typeof gameLogos; revers
           glowRadius={24}
           key={`${logo.src}-${index}`}
         >
-          <div className="game-logo">
+          <div
+            className="game-logo"
+            style={{ "--logo-y": logo.offsetY ?? "0px" } as React.CSSProperties}
+          >
             <img src={logo.src} alt={logo.name} loading="lazy" />
           </div>
         </BorderGlow>
@@ -687,8 +688,11 @@ function FeaturedCaseCard({ item, onOpen }: { item: CaseStudy; onOpen: (item: Ca
   const [isFloating, setIsFloating] = useState(false);
   const [floatActive, setFloatActive] = useState(false);
 
+  const canUseFloating = (event: React.PointerEvent<HTMLButtonElement>) =>
+    event.pointerType === "mouse" && !window.matchMedia("(max-width: 680px)").matches;
+
   const updateTilt = (event: React.PointerEvent<HTMLButtonElement>) => {
-    if (event.pointerType !== "mouse") return;
+    if (!canUseFloating(event)) return;
     const card = cardRef.current;
     if (!card) return;
 
@@ -727,7 +731,7 @@ function FeaturedCaseCard({ item, onOpen }: { item: CaseStudy; onOpen: (item: Ca
   };
 
   const startFloating = (event: React.PointerEvent<HTMLButtonElement>) => {
-    if (event.pointerType !== "mouse") return;
+    if (!canUseFloating(event)) return;
     setIsFloating(true);
     setFloatActive(false);
     updateTilt(event);

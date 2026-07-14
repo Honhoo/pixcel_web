@@ -47,6 +47,14 @@ function normalizeCase(item: CaseStudy): CaseStudy {
   };
 }
 
+function moveItem<T>(items: T[], fromIndex: number, toIndex: number) {
+  if (toIndex < 0 || toIndex >= items.length) return items;
+  const nextItems = [...items];
+  const [item] = nextItems.splice(fromIndex, 1);
+  nextItems.splice(toIndex, 0, item);
+  return nextItems;
+}
+
 function Admin() {
   const [cases, setCases] = useState<CaseStudy[]>([]);
   const [activeId, setActiveId] = useState("");
@@ -428,6 +436,15 @@ function MasonryMediaList({
     <div className="admin-assets">
       {items.map((media, index) => (
         <div className="admin-asset detail" key={`${media.src}-${index}`}>
+          <div className="admin-asset-order">
+            <strong>{String(index + 1).padStart(2, "0")}</strong>
+            <button type="button" onClick={() => onChange(moveItem(items, index, index - 1))} disabled={index === 0}>
+              上移
+            </button>
+            <button type="button" onClick={() => onChange(moveItem(items, index, index + 1))} disabled={index === items.length - 1}>
+              下移
+            </button>
+          </div>
           {media.type === "image" ? <img src={media.src} alt="" /> : <video src={media.src} muted />}
           <input
             value={media.alt || ""}
@@ -446,8 +463,14 @@ function MasonryMediaList({
             />
           )}
           <span>{media.src}</span>
-          <button onClick={() => onRemove(media.src)}>移除</button>
-          <button onClick={() => onRemove(media.src, true)}>删除文件</button>
+          <div className="admin-asset-actions">
+            <button type="button" onClick={() => onRemove(media.src)}>
+              移除
+            </button>
+            <button type="button" onClick={() => onRemove(media.src, true)}>
+              删除文件
+            </button>
+          </div>
         </div>
       ))}
     </div>
@@ -468,6 +491,15 @@ function MediaList({
     <div className="admin-assets">
       {items.map((media, index) => (
         <div className="admin-asset detail" key={`${media.src}-${index}`}>
+          <div className="admin-asset-order">
+            <strong>{String(index + 1).padStart(2, "0")}</strong>
+            <button type="button" onClick={() => onChange(moveItem(items, index, index - 1))} disabled={index === 0}>
+              上移
+            </button>
+            <button type="button" onClick={() => onChange(moveItem(items, index, index + 1))} disabled={index === items.length - 1}>
+              下移
+            </button>
+          </div>
           {media.type === "image" ? <img src={media.src} alt="" /> : <video src={media.src} muted />}
           <input
             value={media.alt}
@@ -485,8 +517,14 @@ function MediaList({
             />
           )}
           <span>{media.src}</span>
-          <button onClick={() => onRemove(media.src)}>移除</button>
-          <button onClick={() => onRemove(media.src, true)}>删除文件</button>
+          <div className="admin-asset-actions">
+            <button type="button" onClick={() => onRemove(media.src)}>
+              移除
+            </button>
+            <button type="button" onClick={() => onRemove(media.src, true)}>
+              删除文件
+            </button>
+          </div>
         </div>
       ))}
     </div>

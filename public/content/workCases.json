@@ -36,30 +36,19 @@
     "masonry": true,
     "masonryOrder": 2,
     "masonryImages": [
-      "/assets/cases/key-visual/ivs-asia.jpg",
-      "/assets/cases/key-visual/opl-finals.jpg"
+      "/assets/cases/key-visual/ivs-asia.jpg"
     ],
     "detailMedia": [
       {
         "type": "image",
         "src": "/assets/cases/key-visual/ivs-asia.jpg",
         "alt": "IVS 中文亚洲对抗赛 KV"
-      },
-      {
-        "type": "image",
-        "src": "/assets/cases/key-visual/opl-finals.jpg",
-        "alt": "赛事视觉参考"
       }
     ],
     "masonryMedia": [
       {
         "type": "image",
         "src": "/assets/cases/key-visual/ivs-asia.jpg",
-        "alt": "IVS 中文亚洲对抗赛"
-      },
-      {
-        "type": "image",
-        "src": "/assets/cases/key-visual/opl-finals.jpg",
         "alt": "IVS 中文亚洲对抗赛"
       }
     ]
