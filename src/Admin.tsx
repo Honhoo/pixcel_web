@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { checkAdminSession, logoutAdmin } from "./auth";
 import type { CaseStudy, Category, MasonryMediaItem, MediaItem } from "./cases";
 
@@ -68,11 +68,6 @@ function Admin() {
       if (!ok) window.location.href = "/login";
     });
   }, []);
-
-  const sortedCases = useMemo(
-    () => [...cases].sort((a, b) => a.featuredOrder - b.featuredOrder || a.masonryOrder - b.masonryOrder),
-    [cases],
-  );
 
   useEffect(() => {
     fetch("/api/admin/cases")
@@ -156,7 +151,7 @@ function Admin() {
       const exists = cases.some((item) => item.id === activeId);
       const nextCases = exists
         ? cases.map((item) => (item.id === activeId ? normalized : item))
-        : [...cases, normalized];
+        : [normalized, ...cases];
       await saveCases(nextCases, "案例已保存，刷新前台即可看到更新");
       setActiveId(normalized.id);
       setDraft(normalized);
@@ -274,7 +269,7 @@ function Admin() {
           新增案例
         </button>
         <div className="admin-case-list">
-          {sortedCases.map((item) => (
+          {cases.map((item) => (
             <button
               className={activeId === item.id ? "active" : ""}
               key={item.id}
