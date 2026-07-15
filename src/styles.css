@@ -1754,6 +1754,67 @@ video {
   font-weight: 800;
 }
 
+.admin-list-tools {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 12px;
+}
+
+.admin-list-tools label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.admin-list-tools select {
+  width: 100%;
+  min-height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  padding: 0 10px;
+  outline: none;
+}
+
+.admin-list-tools select:focus {
+  border-color: rgba(182, 255, 0, 0.72);
+}
+
+.admin-list-tools select option,
+.admin-grid select option {
+  background: #f3f3f3;
+  color: #080a08;
+}
+
+.admin-list-tools select option:checked,
+.admin-grid select option:checked {
+  background: #c8c8c8;
+  color: #080a08;
+}
+
+.admin-order-toggle {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.admin-order-toggle button {
+  min-height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.admin-order-toggle button.active {
+  border-color: var(--acid);
+  background: rgba(182, 255, 0, 0.16);
+  color: var(--acid);
+}
+
 .admin-case-list {
   display: grid;
   gap: 10px;

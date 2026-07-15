@@ -55,18 +55,36 @@ function moveItem<T>(items: T[], fromIndex: number, toIndex: number) {
   return nextItems;
 }
 
+function getTimestampFromPath(value?: string) {
+  if (!value) return 0;
+  const matches = Array.from(value.matchAll(/(?:case-)?(\d{13})(?=[^\d]|$)/g));
+  return matches.reduce((latest, match) => Math.max(latest, Number(match[1]) || 0), 0);
+}
+
+function getCaseMediaPaths(item: CaseStudy) {
+  return [
+    item.cover,
+    ...item.masonryImages,
+    ...(item.masonryMedia || []).flatMap((media) => [media.src, media.poster]),
+    ...item.detailMedia.flatMap((media) => [media.src, media.poster]),
+  ].filter(Boolean);
+}
+
 function getCaseCreatedTime(item: CaseStudy) {
   const createdAtTime = item.createdAt ? Date.parse(item.createdAt) : Number.NaN;
   if (Number.isFinite(createdAtTime)) return createdAtTime;
 
   const timestampMatch = item.id.match(/^case-(\d{10,})$/);
-  return timestampMatch ? Number(timestampMatch[1]) : 0;
+  if (timestampMatch) return Number(timestampMatch[1]);
+
+  return getCaseMediaPaths(item).reduce((latest, path) => Math.max(latest, getTimestampFromPath(path)), 0);
 }
 
-function sortCasesNewestFirst(items: CaseStudy[]) {
+function sortCasesByTime(items: CaseStudy[], order: "asc" | "desc" = "desc") {
+  const direction = order === "asc" ? 1 : -1;
   return [...items]
     .map((item, index) => ({ item, index }))
-    .sort((a, b) => getCaseCreatedTime(b.item) - getCaseCreatedTime(a.item) || a.index - b.index)
+    .sort((a, b) => (getCaseCreatedTime(a.item) - getCaseCreatedTime(b.item)) * direction || a.index - b.index)
     .map(({ item }) => item);
 }
 
@@ -77,6 +95,8 @@ function Admin() {
   const [tagDraft, setTagDraft] = useState("");
   const [status, setStatus] = useState("正在读取案例数据...");
   const [uploading, setUploading] = useState(false);
+  const [yearFilter, setYearFilter] = useState("all");
+  const [sidebarOrder, setSidebarOrder] = useState<"asc" | "desc">("desc");
 
   useEffect(() => {
     checkAdminSession().then((ok) => {
@@ -84,10 +104,15 @@ function Admin() {
     });
   }, []);
 
-  const sidebarCases = useMemo(
-    () => sortCasesNewestFirst(cases),
+  const availableYears = useMemo(
+    () => Array.from(new Set(cases.map((item) => item.year).filter(Boolean))).sort((a, b) => Number(b) - Number(a) || b.localeCompare(a)),
     [cases],
   );
+
+  const sidebarCases = useMemo(() => {
+    const filteredCases = yearFilter === "all" ? cases : cases.filter((item) => item.year === yearFilter);
+    return sortCasesByTime(filteredCases, sidebarOrder);
+  }, [cases, sidebarOrder, yearFilter]);
 
   useEffect(() => {
     fetch("/api/admin/cases")
@@ -96,7 +121,7 @@ function Admin() {
         return res.json();
       })
       .then((data: CaseStudy[]) => {
-        const normalizedData = sortCasesNewestFirst(data.map(normalizeCase));
+        const normalizedData = sortCasesByTime(data.map(normalizeCase));
         setCases(normalizedData);
         setActiveId(normalizedData[0]?.id || "");
         setDraft(normalizedData[0] || emptyCase);
@@ -144,7 +169,7 @@ function Admin() {
   };
 
   const saveCases = async (nextCases: CaseStudy[], message = "已保存") => {
-    const orderedCases = sortCasesNewestFirst(nextCases);
+    const orderedCases = sortCasesByTime(nextCases);
     const response = await fetch("/api/admin/cases", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -289,6 +314,27 @@ function Admin() {
         <div className="admin-brand">
           <span>CASE CMS</span>
           <h1>案例后台</h1>
+        </div>
+        <div className="admin-list-tools">
+          <label>
+            年份筛选
+            <select value={yearFilter} onChange={(event) => setYearFilter(event.target.value)}>
+              <option value="all">全部年份</option>
+              {availableYears.map((year) => (
+                <option value={year} key={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          </label>
+          <div className="admin-order-toggle" aria-label="案例排序">
+            <button className={sidebarOrder === "desc" ? "active" : ""} onClick={() => setSidebarOrder("desc")} type="button">
+              倒序
+            </button>
+            <button className={sidebarOrder === "asc" ? "active" : ""} onClick={() => setSidebarOrder("asc")} type="button">
+              正序
+            </button>
+          </div>
         </div>
         <button className="admin-primary" onClick={addCase}>
           新增案例
