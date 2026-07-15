@@ -63,6 +63,13 @@ function getCaseCreatedTime(item: CaseStudy) {
   return timestampMatch ? Number(timestampMatch[1]) : 0;
 }
 
+function sortCasesNewestFirst(items: CaseStudy[]) {
+  return [...items]
+    .map((item, index) => ({ item, index }))
+    .sort((a, b) => getCaseCreatedTime(b.item) - getCaseCreatedTime(a.item) || a.index - b.index)
+    .map(({ item }) => item);
+}
+
 function Admin() {
   const [cases, setCases] = useState<CaseStudy[]>([]);
   const [activeId, setActiveId] = useState("");
@@ -78,7 +85,7 @@ function Admin() {
   }, []);
 
   const sidebarCases = useMemo(
-    () => [...cases].sort((a, b) => getCaseCreatedTime(b) - getCaseCreatedTime(a)),
+    () => sortCasesNewestFirst(cases),
     [cases],
   );
 
@@ -89,7 +96,7 @@ function Admin() {
         return res.json();
       })
       .then((data: CaseStudy[]) => {
-        const normalizedData = data.map(normalizeCase);
+        const normalizedData = sortCasesNewestFirst(data.map(normalizeCase));
         setCases(normalizedData);
         setActiveId(normalizedData[0]?.id || "");
         setDraft(normalizedData[0] || emptyCase);
@@ -137,16 +144,17 @@ function Admin() {
   };
 
   const saveCases = async (nextCases: CaseStudy[], message = "已保存") => {
+    const orderedCases = sortCasesNewestFirst(nextCases);
     const response = await fetch("/api/admin/cases", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(nextCases),
+      body: JSON.stringify(orderedCases),
     });
     if (!response.ok) {
       const data = await response.json().catch(() => null);
       throw new Error(data?.error || "保存失败");
     }
-    setCases(nextCases);
+    setCases(orderedCases);
     setStatus(message);
   };
 
