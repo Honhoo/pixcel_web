@@ -18,6 +18,7 @@ export type MasonryMediaItem = {
 
 export type CaseStudy = {
   id: string;
+  createdAt?: string;
   title: string;
   category: Category;
   year: string;

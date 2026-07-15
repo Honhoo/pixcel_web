@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { checkAdminSession, logoutAdmin } from "./auth";
 import type { CaseStudy, Category, MasonryMediaItem, MediaItem } from "./cases";
 
@@ -55,6 +55,14 @@ function moveItem<T>(items: T[], fromIndex: number, toIndex: number) {
   return nextItems;
 }
 
+function getCaseCreatedTime(item: CaseStudy) {
+  const createdAtTime = item.createdAt ? Date.parse(item.createdAt) : Number.NaN;
+  if (Number.isFinite(createdAtTime)) return createdAtTime;
+
+  const timestampMatch = item.id.match(/^case-(\d{10,})$/);
+  return timestampMatch ? Number(timestampMatch[1]) : 0;
+}
+
 function Admin() {
   const [cases, setCases] = useState<CaseStudy[]>([]);
   const [activeId, setActiveId] = useState("");
@@ -68,6 +76,11 @@ function Admin() {
       if (!ok) window.location.href = "/login";
     });
   }, []);
+
+  const sidebarCases = useMemo(
+    () => [...cases].sort((a, b) => getCaseCreatedTime(b) - getCaseCreatedTime(a)),
+    [cases],
+  );
 
   useEffect(() => {
     fetch("/api/admin/cases")
@@ -101,6 +114,7 @@ function Admin() {
     setDraft({
       ...emptyCase,
       id: `case-${Date.now()}`,
+      createdAt: new Date().toISOString(),
       featuredOrder: nextOrder,
       masonryOrder: nextOrder,
     });
@@ -138,7 +152,11 @@ function Admin() {
 
   const saveDraft = async () => {
     try {
-      const normalized = normalizeCase(draft);
+      const exists = cases.some((item) => item.id === activeId);
+      const normalized = normalizeCase({
+        ...draft,
+        createdAt: draft.createdAt || (!exists ? new Date().toISOString() : undefined),
+      });
       if (!normalized.id || !normalized.title || !normalized.cover) {
         setStatus("请至少填写 ID、标题和封面图");
         return;
@@ -148,7 +166,6 @@ function Admin() {
         setStatus("案例 ID 已存在，请换一个 ID");
         return;
       }
-      const exists = cases.some((item) => item.id === activeId);
       const nextCases = exists
         ? cases.map((item) => (item.id === activeId ? normalized : item))
         : [normalized, ...cases];
@@ -269,7 +286,7 @@ function Admin() {
           新增案例
         </button>
         <div className="admin-case-list">
-          {cases.map((item) => (
+          {sidebarCases.map((item) => (
             <button
               className={activeId === item.id ? "active" : ""}
               key={item.id}
