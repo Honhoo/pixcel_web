@@ -95,6 +95,7 @@ function Admin() {
   const [tagDraft, setTagDraft] = useState("");
   const [status, setStatus] = useState("正在读取案例数据...");
   const [uploading, setUploading] = useState(false);
+  const [uploadTarget, setUploadTarget] = useState<"cover" | "masonry" | "detail" | null>(null);
   const [yearFilter, setYearFilter] = useState("all");
   const [sidebarOrder, setSidebarOrder] = useState<"asc" | "desc">("desc");
 
@@ -185,6 +186,10 @@ function Admin() {
 
   const saveDraft = async () => {
     try {
+      if (uploading) {
+        setStatus("素材还在上传，请上传完成后再保存案例");
+        return;
+      }
       const exists = cases.some((item) => item.id === activeId);
       const normalized = normalizeCase({
         ...draft,
@@ -226,6 +231,7 @@ function Admin() {
       return;
     }
     setUploading(true);
+    setUploadTarget(target);
     setStatus("正在上传素材...");
     try {
       const formData = new FormData();
@@ -279,6 +285,7 @@ function Admin() {
       setStatus(error instanceof Error ? error.message : "上传失败");
     } finally {
       setUploading(false);
+      setUploadTarget(null);
     }
   };
 
@@ -367,8 +374,8 @@ function Admin() {
             <button onClick={deleteCase} disabled={!activeId}>
               删除案例
             </button>
-            <button className="admin-primary" onClick={saveDraft}>
-              保存案例
+            <button className="admin-primary" onClick={saveDraft} disabled={uploading}>
+              {uploading ? "素材上传中..." : "保存案例"}
             </button>
           </div>
         </header>
@@ -462,6 +469,7 @@ function Admin() {
           <div>
             <h3>封面图</h3>
             <p>{draft.cover || "还没有封面图"}</p>
+            {uploading && uploadTarget === "cover" && <p className="admin-uploading-note">封面正在上传，完成后会显示预览图。</p>}
             {draft.cover && <img className="admin-cover-preview" src={draft.cover} alt="" />}
             <input type="file" accept="image/*" onChange={(event) => uploadFiles("cover", event.target.files)} disabled={uploading} />
           </div>
@@ -469,6 +477,7 @@ function Admin() {
           <div>
             <h3>图片墙展示素材</h3>
             <p>可上传图片或视频。没有额外素材时，前台会自动使用封面图展示。</p>
+            {uploading && uploadTarget === "masonry" && <p className="admin-uploading-note">图片墙素材正在上传，请稍等。</p>}
             <input type="file" accept="image/*,video/*" multiple onChange={(event) => uploadFiles("masonry", event.target.files)} disabled={uploading} />
             <MasonryMediaList
               items={draft.masonryMedia || draft.masonryImages.map((src) => ({ type: "image", src, alt: draft.title }))}
@@ -479,6 +488,7 @@ function Admin() {
 
           <div>
             <h3>详情媒体</h3>
+            {uploading && uploadTarget === "detail" && <p className="admin-uploading-note">详情媒体正在上传，请稍等。</p>}
             <input type="file" accept="image/*,video/*" multiple onChange={(event) => uploadFiles("detail", event.target.files)} disabled={uploading} />
             <MediaList items={draft.detailMedia} onChange={(items) => updateDraft("detailMedia", items)} onRemove={removeDetailMedia} />
           </div>
