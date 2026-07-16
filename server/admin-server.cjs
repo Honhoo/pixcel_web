@@ -9,7 +9,7 @@ const rootDir = path.resolve(__dirname, "..");
 const defaultContentPath = path.join(rootDir, "public", "content", "workCases.json");
 const legacyContentPath = path.join(rootDir, "src", "content", "workCases.json");
 const contentPath = path.resolve(process.env.CASES_CONTENT_PATH || defaultContentPath);
-const assetsCasesDir = path.join(rootDir, "public", "assets", "cases");
+const assetsCasesDir = path.resolve(process.env.CASES_ASSETS_DIR || path.join(rootDir, "public", "assets", "cases"));
 const port = Number(process.env.ADMIN_PORT || 5174);
 
 const adminUsername = process.env.ADMIN_USERNAME || "huanghao";
@@ -24,7 +24,8 @@ const cosConfig = {
   region: process.env.COS_REGION,
   publicBaseUrl: (process.env.COS_PUBLIC_BASE_URL || "").replace(/\/$/, ""),
 };
-const useCos = Boolean(cosConfig.secretId && cosConfig.secretKey && cosConfig.bucket && cosConfig.region);
+const assetStorage = String(process.env.ASSET_STORAGE || "local").toLowerCase();
+const useCos = assetStorage === "cos" && Boolean(cosConfig.secretId && cosConfig.secretKey && cosConfig.bucket && cosConfig.region);
 const cos = useCos
   ? new (require("cos-nodejs-sdk-v5"))({
       SecretId: cosConfig.secretId,
@@ -156,6 +157,16 @@ function getCosKey(assetPath) {
   return "";
 }
 
+function getLocalAssetPath(assetPath) {
+  const relativePath = assetPath.replace(/^\/assets\/cases\/?/, "");
+  return path.resolve(assetsCasesDir, relativePath);
+}
+
+function isInsideDir(filePath, dirPath) {
+  const relativePath = path.relative(dirPath, filePath);
+  return relativePath && !relativePath.startsWith("..") && !path.isAbsolute(relativePath);
+}
+
 const diskStorage = multer.diskStorage({
   destination(req, file, cb) {
     try {
@@ -274,8 +285,8 @@ app.delete("/api/admin/file", async (req, res, next) => {
     if (!assetPath.startsWith("/assets/cases/")) {
       return res.status(400).json({ error: "Only case assets can be deleted" });
     }
-    const absolutePath = path.resolve(rootDir, "public", assetPath.replace(/^\//, ""));
-    if (!absolutePath.startsWith(assetsCasesDir)) {
+    const absolutePath = getLocalAssetPath(assetPath);
+    if (!isInsideDir(absolutePath, assetsCasesDir)) {
       return res.status(400).json({ error: "Invalid file path" });
     }
     if (fs.existsSync(absolutePath)) fs.unlinkSync(absolutePath);
@@ -295,5 +306,6 @@ app.listen(port, () => {
   ensureContentFile();
   console.log(`Case admin server running at http://localhost:${port}`);
   console.log(`Case content file: ${contentPath}`);
+  console.log(`Case assets directory: ${assetsCasesDir}`);
   console.log(`Asset mode: ${useCos ? "Tencent COS" : "local disk"}`);
 });
