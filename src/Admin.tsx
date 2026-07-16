@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { checkAdminSession, logoutAdmin } from "./auth";
 import type { CaseStudy, Category, MasonryMediaItem, MediaItem } from "./cases";
 
+type UploadTarget = "cover" | "masonry" | "detail";
+
 const emptyCase: CaseStudy = {
   id: "",
   title: "",
@@ -95,7 +97,8 @@ function Admin() {
   const [tagDraft, setTagDraft] = useState("");
   const [status, setStatus] = useState("正在读取案例数据...");
   const [uploading, setUploading] = useState(false);
-  const [uploadTarget, setUploadTarget] = useState<"cover" | "masonry" | "detail" | null>(null);
+  const [uploadTarget, setUploadTarget] = useState<UploadTarget | null>(null);
+  const [pendingFiles, setPendingFiles] = useState<Record<UploadTarget, File[]>>({ cover: [], masonry: [], detail: [] });
   const [yearFilter, setYearFilter] = useState("all");
   const [sidebarOrder, setSidebarOrder] = useState<"asc" | "desc">("desc");
 
@@ -184,16 +187,106 @@ function Admin() {
     setStatus(message);
   };
 
+  const uploadCaseFiles = async (target: UploadTarget, files: File[], baseCase: CaseStudy) => {
+    if (files.length === 0) return baseCase;
+    const caseId = createId(baseCase.id || baseCase.title);
+    if (!caseId) throw new Error("上传前请先填写案例 ID 或标题");
+
+    const formData = new FormData();
+    formData.append("caseId", caseId);
+    files.forEach((file) => formData.append("files", file));
+
+    const response = await fetch("/api/admin/upload", {
+      method: "POST",
+      body: formData,
+    });
+    if (!response.ok) {
+      const data = await response.json().catch(() => null);
+      throw new Error(data?.error || "上传失败");
+    }
+
+    const data: { files: Array<{ path: string; type: "image" | "video" }> } = await response.json();
+    const paths = data.files.map((file) => file.path);
+
+    if (target === "cover") return { ...baseCase, id: caseId, cover: paths[0] || baseCase.cover };
+
+    if (target === "masonry") {
+      const existingMedia =
+        baseCase.masonryMedia || baseCase.masonryImages.map((src): MasonryMediaItem => ({ type: "image", src, alt: baseCase.title || caseId }));
+      return {
+        ...baseCase,
+        id: caseId,
+        masonryMedia: [
+          ...existingMedia,
+          ...data.files.map((file): MasonryMediaItem => ({
+            type: file.type,
+            src: file.path,
+            poster: file.type === "video" ? baseCase.cover : undefined,
+            alt: baseCase.title || caseId,
+          })),
+        ],
+      };
+    }
+
+    return {
+      ...baseCase,
+      id: caseId,
+      detailMedia: [
+        ...baseCase.detailMedia,
+        ...data.files.map((file): MediaItem => ({
+          type: file.type,
+          src: file.path,
+          poster: file.type === "video" ? baseCase.cover : undefined,
+          alt: baseCase.title || caseId,
+        })),
+      ],
+    };
+  };
+
+  const getSelectedFiles = (inputId: string) => {
+    const input = document.getElementById(inputId) as HTMLInputElement | null;
+    return input?.files ? Array.from(input.files) : [];
+  };
+
   const saveDraft = async () => {
     try {
       if (uploading) {
         setStatus("素材还在上传，请上传完成后再保存案例");
         return;
       }
+      let draftToSave = draft;
+      const coverFiles = pendingFiles.cover.length > 0 ? pendingFiles.cover : getSelectedFiles("admin-cover-file");
+      const masonryFiles = pendingFiles.masonry.length > 0 ? pendingFiles.masonry : getSelectedFiles("admin-masonry-file");
+      const detailFiles = pendingFiles.detail.length > 0 ? pendingFiles.detail : getSelectedFiles("admin-detail-file");
+      const shouldUploadPending =
+        (!draftToSave.cover && coverFiles.length > 0) || masonryFiles.length > 0 || detailFiles.length > 0;
+      if (shouldUploadPending) {
+        setUploading(true);
+        setStatus("正在补充上传已选择的素材...");
+        try {
+          if (!draftToSave.cover && coverFiles.length > 0) {
+            setUploadTarget("cover");
+            draftToSave = await uploadCaseFiles("cover", coverFiles, draftToSave);
+          }
+          if (masonryFiles.length > 0) {
+            setUploadTarget("masonry");
+            draftToSave = await uploadCaseFiles("masonry", masonryFiles, draftToSave);
+          }
+          if (detailFiles.length > 0) {
+            setUploadTarget("detail");
+            draftToSave = await uploadCaseFiles("detail", detailFiles, draftToSave);
+          }
+          setDraft(draftToSave);
+          setPendingFiles({ cover: [], masonry: [], detail: [] });
+        } finally {
+          setUploading(false);
+          setUploadTarget(null);
+        }
+      }
       const exists = cases.some((item) => item.id === activeId);
       const normalized = normalizeCase({
-        ...draft,
-        createdAt: draft.createdAt || (!exists ? new Date().toISOString() : undefined),
+        ...draftToSave,
+        createdAt: draftToSave.createdAt || (!exists ? new Date().toISOString() : undefined),
       });
       if (!normalized.id || !normalized.title || !normalized.cover) {
         setStatus("请至少填写 ID、标题和封面图");
@@ -471,14 +564,21 @@ function Admin() {
             <p>{draft.cover || "还没有封面图"}</p>
             {uploading && uploadTarget === "cover" && <p className="admin-uploading-note">封面正在上传，完成后会显示预览图。</p>}
             {draft.cover && <img className="admin-cover-preview" src={draft.cover} alt="" />}
-            <input type="file" accept="image/*" onChange={(event) => uploadFiles("cover", event.target.files)} disabled={uploading} />
+            <input id="admin-cover-file" type="file" accept="image/*" onChange={(event) => uploadFiles("cover", event.target.files)} disabled={uploading} />
           </div>
 
           <div>
             <h3>图片墙展示素材</h3>
             <p>可上传图片或视频。没有额外素材时，前台会自动使用封面图展示。</p>
             {uploading && uploadTarget === "masonry" && <p className="admin-uploading-note">图片墙素材正在上传，请稍等。</p>}
-            <input type="file" accept="image/*,video/*" multiple onChange={(event) => uploadFiles("masonry", event.target.files)} disabled={uploading} />
+            <input
+              id="admin-masonry-file"
+              type="file"
+              accept="image/*,video/*"
+              multiple
+              onChange={(event) => uploadFiles("masonry", event.target.files)}
+              disabled={uploading}
+            />
             <MasonryMediaList
               items={draft.masonryMedia || draft.masonryImages.map((src) => ({ type: "image", src, alt: draft.title }))}
               onChange={(items) => updateDraft("masonryMedia", items)}
@@ -489,7 +589,14 @@ function Admin() {
           <div>
             <h3>详情媒体</h3>
             {uploading && uploadTarget === "detail" && <p className="admin-uploading-note">详情媒体正在上传，请稍等。</p>}
-            <input type="file" accept="image/*,video/*" multiple onChange={(event) => uploadFiles("detail", event.target.files)} disabled={uploading} />
+            <input
+              id="admin-detail-file"
+              type="file"
+              accept="image/*,video/*"
+              multiple
+              onChange={(event) => uploadFiles("detail", event.target.files)}
+              disabled={uploading}
+            />
             <MediaList items={draft.detailMedia} onChange={(items) => updateDraft("detailMedia", items)} onRemove={removeDetailMedia} />
           </div>
         </section>
