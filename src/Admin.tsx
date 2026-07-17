@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { checkAdminSession, logoutAdmin } from "./auth";
 import type { CaseStudy, Category, MasonryMediaItem, MediaItem } from "./cases";
 
-type UploadTarget = "cover" | "masonry" | "detail";
+type UploadTarget = "cover" | "detail";
 
 const emptyCase: CaseStudy = {
   id: "",
@@ -13,6 +13,7 @@ const emptyCase: CaseStudy = {
   tags: [],
   cover: "",
   featured: false,
+  featuredHome: false,
   featuredOrder: 99,
   masonry: true,
   masonryOrder: 99,
@@ -22,6 +23,18 @@ const emptyCase: CaseStudy = {
 };
 
 const categoryOptions: Category[] = ["KEY VISUAL", "PACKAGE", "媒体传播", "虚幻引擎"];
+
+function createMasonryMediaFromDetails(detailMedia: MediaItem[], fallbackTitle: string): MasonryMediaItem[] {
+  return detailMedia
+    .filter((media) => media.showInMasonry)
+    .map((media) => ({
+      type: media.type,
+      src: media.src,
+      poster: media.poster,
+      alt: media.alt || fallbackTitle,
+    }))
+    .filter((media, index, allMedia) => media.src && allMedia.findIndex((item) => item.src === media.src && item.type === media.type) === index);
+}
 
 function createId(title: string) {
   return title
@@ -34,16 +47,36 @@ function createId(title: string) {
 }
 
 function normalizeCase(item: CaseStudy): CaseStudy {
+  const legacyMasonryMedia = [
+    ...(item.masonryMedia || []),
+    ...item.masonryImages.map((src): MasonryMediaItem => ({ type: "image", src, alt: item.title })),
+  ].filter((media, index, allMedia) => media.src && allMedia.findIndex((item) => item.src === media.src && item.type === media.type) === index);
+  const detailMedia = item.detailMedia
+    .filter((media) => media.src)
+    .map((media) => ({
+      ...media,
+      showInMasonry: media.showInMasonry ?? legacyMasonryMedia.some((item) => item.src === media.src && item.type === media.type),
+    }));
+  legacyMasonryMedia.forEach((media) => {
+    if (!detailMedia.some((item) => item.src === media.src && item.type === media.type)) {
+      detailMedia.push({
+        type: media.type,
+        src: media.src,
+        poster: media.poster,
+        alt: media.alt || item.title,
+        showInMasonry: true,
+      });
+    }
+  });
+
   return {
     ...item,
     id: createId(item.id || item.title),
     tags: item.tags.filter(Boolean),
-    masonryImages: item.masonryImages.filter(Boolean),
-    masonryMedia: [
-      ...(item.masonryMedia || []),
-      ...item.masonryImages.map((src): MasonryMediaItem => ({ type: "image", src, alt: item.title })),
-    ].filter((media, index, allMedia) => media.src && allMedia.findIndex((item) => item.src === media.src && item.type === media.type) === index),
-    detailMedia: item.detailMedia.filter((media) => media.src),
+    masonryImages: [],
+    masonryMedia: createMasonryMediaFromDetails(detailMedia, item.title),
+    detailMedia,
+    featuredHome: item.featuredHome ?? item.featured,
     featuredOrder: Number(item.featuredOrder) || 99,
     masonryOrder: Number(item.masonryOrder) || 99,
   };
@@ -98,7 +131,7 @@ function Admin() {
   const [status, setStatus] = useState("正在读取案例数据...");
   const [uploading, setUploading] = useState(false);
   const [uploadTarget, setUploadTarget] = useState<UploadTarget | null>(null);
-  const [pendingFiles, setPendingFiles] = useState<Record<UploadTarget, File[]>>({ cover: [], masonry: [], detail: [] });
+  const [pendingFiles, setPendingFiles] = useState<Record<UploadTarget, File[]>>({ cover: [], detail: [] });
   const [yearFilter, setYearFilter] = useState("all");
   const [sidebarOrder, setSidebarOrder] = useState<"asc" | "desc">("desc");
 
@@ -210,24 +243,6 @@ function Admin() {
 
     if (target === "cover") return { ...baseCase, id: caseId, cover: paths[0] || baseCase.cover };
 
-    if (target === "masonry") {
-      const existingMedia =
-        baseCase.masonryMedia || baseCase.masonryImages.map((src): MasonryMediaItem => ({ type: "image", src, alt: baseCase.title || caseId }));
-      return {
-        ...baseCase,
-        id: caseId,
-        masonryMedia: [
-          ...existingMedia,
-          ...data.files.map((file): MasonryMediaItem => ({
-            type: file.type,
-            src: file.path,
-            poster: file.type === "video" ? baseCase.cover : undefined,
-            alt: baseCase.title || caseId,
-          })),
-        ],
-      };
-    }
-
     return {
       ...baseCase,
       id: caseId,
@@ -238,6 +253,7 @@ function Admin() {
           src: file.path,
           poster: file.type === "video" ? baseCase.cover : undefined,
           alt: baseCase.title || caseId,
+          showInMasonry: true,
         })),
       ],
     };
@@ -256,10 +272,8 @@ function Admin() {
       }
       let draftToSave = draft;
       const coverFiles = pendingFiles.cover.length > 0 ? pendingFiles.cover : getSelectedFiles("admin-cover-file");
-      const masonryFiles = pendingFiles.masonry.length > 0 ? pendingFiles.masonry : getSelectedFiles("admin-masonry-file");
       const detailFiles = pendingFiles.detail.length > 0 ? pendingFiles.detail : getSelectedFiles("admin-detail-file");
-      const shouldUploadPending =
-        (!draftToSave.cover && coverFiles.length > 0) || masonryFiles.length > 0 || detailFiles.length > 0;
+      const shouldUploadPending = (!draftToSave.cover && coverFiles.length > 0) || detailFiles.length > 0;
       if (shouldUploadPending) {
         setUploading(true);
         setStatus("正在补充上传已选择的素材...");
@@ -268,16 +282,12 @@ function Admin() {
             setUploadTarget("cover");
             draftToSave = await uploadCaseFiles("cover", coverFiles, draftToSave);
           }
-          if (masonryFiles.length > 0) {
-            setUploadTarget("masonry");
-            draftToSave = await uploadCaseFiles("masonry", masonryFiles, draftToSave);
-          }
           if (detailFiles.length > 0) {
             setUploadTarget("detail");
             draftToSave = await uploadCaseFiles("detail", detailFiles, draftToSave);
           }
           setDraft(draftToSave);
-          setPendingFiles({ cover: [], masonry: [], detail: [] });
+          setPendingFiles({ cover: [], detail: [] });
         } finally {
           setUploading(false);
           setUploadTarget(null);
@@ -286,6 +296,7 @@ function Admin() {
       const exists = cases.some((item) => item.id === activeId);
       const normalized = normalizeCase({
         ...draftToSave,
+        featuredHome: draftToSave.featured ? Boolean(draftToSave.featuredHome) : false,
         createdAt: draftToSave.createdAt || (!exists ? new Date().toISOString() : undefined),
       });
       if (!normalized.id || !normalized.title || !normalized.cover) {
@@ -316,7 +327,7 @@ function Admin() {
     setDraft(nextCases[0] || emptyCase);
   };
 
-  const uploadFiles = async (target: "cover" | "masonry" | "detail", files: FileList | null) => {
+  const uploadFiles = async (target: UploadTarget, files: FileList | null) => {
     if (!files?.length) return;
     const caseId = createId(draft.id || draft.title);
     if (!caseId) {
@@ -342,23 +353,6 @@ function Admin() {
       const paths = data.files.map((file) => file.path);
       setDraft((current) => {
         if (target === "cover") return { ...current, id: caseId, cover: paths[0] || current.cover };
-        if (target === "masonry") {
-          const existingMedia =
-            current.masonryMedia || current.masonryImages.map((src): MasonryMediaItem => ({ type: "image", src, alt: current.title || caseId }));
-          return {
-            ...current,
-            id: caseId,
-            masonryMedia: [
-              ...existingMedia,
-              ...data.files.map((file): MasonryMediaItem => ({
-                type: file.type,
-                src: file.path,
-                poster: file.type === "video" ? current.cover : undefined,
-                alt: current.title || caseId,
-              })),
-            ],
-          };
-        }
         return {
           ...current,
           id: caseId,
@@ -369,6 +363,7 @@ function Admin() {
               src: file.path,
               poster: file.type === "video" ? current.cover : undefined,
               alt: current.title || caseId,
+              showInMasonry: true,
             })),
           ],
         };
@@ -389,15 +384,6 @@ function Admin() {
 
   const removeAssetFile = async (assetPath: string) => {
     await fetch(`/api/admin/file?path=${encodeURIComponent(assetPath)}`, { method: "DELETE" });
-  };
-
-  const removeMasonryImage = async (src: string, deleteFile = false) => {
-    if (deleteFile) await removeAssetFile(src);
-    setDraft((current) => ({
-      ...current,
-      masonryImages: current.masonryImages.filter((item) => item !== src),
-      masonryMedia: (current.masonryMedia || []).filter((item) => item.src !== src),
-    }));
   };
 
   const removeDetailMedia = async (src: string, deleteFile = false) => {
@@ -448,7 +434,7 @@ function Admin() {
             >
               <strong>{item.title}</strong>
               <span>
-                {item.category} / 精品 {item.featured ? "开" : "关"} / 瀑布流 {item.masonry ? "开" : "关"}
+                {item.category} / 精品 {item.featured ? "开" : "关"} / 首页 {(item.featuredHome ?? item.featured) ? "开" : "关"} / 瀑布流 {item.masonry ? "开" : "关"}
               </span>
             </button>
           ))}
@@ -533,8 +519,34 @@ function Admin() {
 
         <div className="admin-switches">
           <label>
-            <input type="checkbox" checked={draft.featured} onChange={(event) => updateDraft("featured", event.target.checked)} />
+            <input
+              type="checkbox"
+              checked={draft.featured}
+              onChange={(event) => {
+                const checked = event.target.checked;
+                setDraft((current) => ({
+                  ...current,
+                  featured: checked,
+                  featuredHome: checked ? current.featuredHome : false,
+                }));
+              }}
+            />
             精品案例
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={Boolean(draft.featuredHome)}
+              onChange={(event) => {
+                const checked = event.target.checked;
+                setDraft((current) => ({
+                  ...current,
+                  featured: checked ? true : current.featured,
+                  featuredHome: checked,
+                }));
+              }}
+            />
+            首页展示
           </label>
           <label>
             精品排序
@@ -568,26 +580,11 @@ function Admin() {
           </div>
 
           <div>
-            <h3>图片墙展示素材</h3>
-            <p>可上传图片或视频。没有额外素材时，前台会自动使用封面图展示。</p>
-            {uploading && uploadTarget === "masonry" && <p className="admin-uploading-note">图片墙素材正在上传，请稍等。</p>}
-            <input
-              id="admin-masonry-file"
-              type="file"
-              accept="image/*,video/*"
-              multiple
-              onChange={(event) => uploadFiles("masonry", event.target.files)}
-              disabled={uploading}
-            />
-            <MasonryMediaList
-              items={draft.masonryMedia || draft.masonryImages.map((src) => ({ type: "image", src, alt: draft.title }))}
-              onChange={(items) => updateDraft("masonryMedia", items)}
-              onRemove={removeMasonryImage}
-            />
-          </div>
-
-          <div>
-            <h3>详情媒体</h3>
+            <h3>详情媒体 / 图片墙素材池</h3>
+            <div className="admin-media-hint">
+              <strong>图片墙展示</strong>
+              <p>素材只需要上传到详情媒体。勾选“图片墙展示”的素材，会同步出现在前台分类展示里，不需要重复上传。</p>
+            </div>
             {uploading && uploadTarget === "detail" && <p className="admin-uploading-note">详情媒体正在上传，请稍等。</p>}
             <input
               id="admin-detail-file"
@@ -602,61 +599,6 @@ function Admin() {
         </section>
       </section>
     </main>
-  );
-}
-
-function MasonryMediaList({
-  items,
-  onChange,
-  onRemove,
-}: {
-  items: MasonryMediaItem[];
-  onChange: (items: MasonryMediaItem[]) => void;
-  onRemove: (src: string, deleteFile?: boolean) => void;
-}) {
-  if (items.length === 0) return <p className="admin-empty">暂无额外素材，将自动使用封面图</p>;
-  return (
-    <div className="admin-assets">
-      {items.map((media, index) => (
-        <div className="admin-asset detail" key={`${media.src}-${index}`}>
-          <div className="admin-asset-order">
-            <strong>{String(index + 1).padStart(2, "0")}</strong>
-            <button type="button" onClick={() => onChange(moveItem(items, index, index - 1))} disabled={index === 0}>
-              上移
-            </button>
-            <button type="button" onClick={() => onChange(moveItem(items, index, index + 1))} disabled={index === items.length - 1}>
-              下移
-            </button>
-          </div>
-          {media.type === "image" ? <img src={media.src} alt="" /> : <video src={media.src} muted />}
-          <input
-            value={media.alt || ""}
-            placeholder="素材说明，可留空"
-            onChange={(event) =>
-              onChange(items.map((item, itemIndex) => (itemIndex === index ? { ...item, alt: event.target.value } : item)))
-            }
-          />
-          {media.type === "video" && (
-            <input
-              placeholder="视频封面 poster，可留空"
-              value={media.poster || ""}
-              onChange={(event) =>
-                onChange(items.map((item, itemIndex) => (itemIndex === index ? { ...item, poster: event.target.value } : item)))
-              }
-            />
-          )}
-          <span>{media.src}</span>
-          <div className="admin-asset-actions">
-            <button type="button" onClick={() => onRemove(media.src)}>
-              移除
-            </button>
-            <button type="button" onClick={() => onRemove(media.src, true)}>
-              删除文件
-            </button>
-          </div>
-        </div>
-      ))}
-    </div>
   );
 }
 
@@ -699,6 +641,16 @@ function MediaList({
               }
             />
           )}
+          <label className="admin-inline-check">
+            <input
+              type="checkbox"
+              checked={Boolean(media.showInMasonry)}
+              onChange={(event) =>
+                onChange(items.map((item, itemIndex) => (itemIndex === index ? { ...item, showInMasonry: event.target.checked } : item)))
+              }
+            />
+            图片墙展示
+          </label>
           <span>{media.src}</span>
           <div className="admin-asset-actions">
             <button type="button" onClick={() => onRemove(media.src)}>

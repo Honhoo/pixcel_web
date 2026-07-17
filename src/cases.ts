@@ -7,6 +7,7 @@ export type MediaItem = {
   src: string;
   poster?: string;
   alt: string;
+  showInMasonry?: boolean;
 };
 
 export type MasonryMediaItem = {
@@ -26,6 +27,7 @@ export type CaseStudy = {
   tags: string[];
   cover: string;
   featured: boolean;
+  featuredHome?: boolean;
   featuredOrder: number;
   masonry: boolean;
   masonryOrder: number;
@@ -42,13 +44,24 @@ export const categories: Array<"全部" | Category> = [
   "虚幻引擎",
 ];
 
-export const caseStudies = workCases as CaseStudy[];
+export function normalizeCaseStudy(item: CaseStudy): CaseStudy {
+  return {
+    ...item,
+    featuredHome: item.featuredHome ?? item.featured,
+  };
+}
+
+export function isHomeFeaturedCase(item: CaseStudy) {
+  return item.featured && (item.featuredHome ?? item.featured);
+}
+
+export const caseStudies = (workCases as CaseStudy[]).map(normalizeCaseStudy);
 
 export async function loadCaseStudies() {
   try {
     const response = await fetch(`/content/workCases.json?v=${Date.now()}`, { cache: "no-store" });
     if (!response.ok) throw new Error("content unavailable");
-    return (await response.json()) as CaseStudy[];
+    return ((await response.json()) as CaseStudy[]).map(normalizeCaseStudy);
   } catch {
     return caseStudies;
   }

@@ -17,21 +17,7 @@ const adminPassword = process.env.ADMIN_PASSWORD || "19930315";
 const sessionCookieName = "vp_admin_session";
 const sessions = new Map();
 
-const cosConfig = {
-  secretId: process.env.COS_SECRET_ID,
-  secretKey: process.env.COS_SECRET_KEY,
-  bucket: process.env.COS_BUCKET,
-  region: process.env.COS_REGION,
-  publicBaseUrl: (process.env.COS_PUBLIC_BASE_URL || "").replace(/\/$/, ""),
-};
-const assetStorage = String(process.env.ASSET_STORAGE || "local").toLowerCase();
-const useCos = assetStorage === "cos" && Boolean(cosConfig.secretId && cosConfig.secretKey && cosConfig.bucket && cosConfig.region);
-const cos = useCos
-  ? new (require("cos-nodejs-sdk-v5"))({
-      SecretId: cosConfig.secretId,
-      SecretKey: cosConfig.secretKey,
-    })
-  : null;
+const assetStorage = "local";
 
 app.use(express.json({ limit: "10mb" }));
 
@@ -116,47 +102,6 @@ function requireAuth(req, res, next) {
   next();
 }
 
-function cosPublicPath(key) {
-  if (cosConfig.publicBaseUrl) return `${cosConfig.publicBaseUrl}/${key}`;
-  return `https://${cosConfig.bucket}.cos.${cosConfig.region}.myqcloud.com/${key}`;
-}
-
-function putCosObject(params) {
-  return new Promise((resolve, reject) => {
-    cos.putObject(params, (error, data) => {
-      if (error) reject(error);
-      else resolve(data);
-    });
-  });
-}
-
-function deleteCosObject(key) {
-  return new Promise((resolve, reject) => {
-    cos.deleteObject(
-      {
-        Bucket: cosConfig.bucket,
-        Region: cosConfig.region,
-        Key: key,
-      },
-      (error, data) => {
-        if (error) reject(error);
-        else resolve(data);
-      },
-    );
-  });
-}
-
-function getCosKey(assetPath) {
-  if (!assetPath) return "";
-  if (cosConfig.publicBaseUrl && assetPath.startsWith(`${cosConfig.publicBaseUrl}/`)) {
-    return assetPath.slice(cosConfig.publicBaseUrl.length + 1);
-  }
-  const defaultBase = `https://${cosConfig.bucket}.cos.${cosConfig.region}.myqcloud.com/`;
-  if (assetPath.startsWith(defaultBase)) return assetPath.slice(defaultBase.length);
-  if (assetPath.startsWith("/assets/cases/")) return assetPath.replace(/^\//, "");
-  return "";
-}
-
 function getLocalAssetPath(assetPath) {
   const relativePath = assetPath.replace(/^\/assets\/cases\/?/, "");
   return path.resolve(assetsCasesDir, relativePath);
@@ -184,7 +129,7 @@ const diskStorage = multer.diskStorage({
 });
 
 const upload = multer({
-  storage: useCos ? multer.memoryStorage() : diskStorage,
+  storage: diskStorage,
   limits: { fileSize: 500 * 1024 * 1024 },
 });
 
@@ -240,28 +185,11 @@ app.post("/api/admin/upload", upload.array("files"), async (req, res, next) => {
 
     for (const file of req.files || []) {
       const type = file.mimetype.startsWith("video/") ? "video" : "image";
-      if (useCos) {
-        const filename = safeFilename(file.originalname);
-        const key = `assets/cases/${caseId}/${filename}`;
-        await putCosObject({
-          Bucket: cosConfig.bucket,
-          Region: cosConfig.region,
-          Key: key,
-          Body: file.buffer,
-          ContentType: file.mimetype,
-        });
-        files.push({
-          originalName: file.originalname,
-          path: cosPublicPath(key),
-          type,
-        });
-      } else {
-        files.push({
-          originalName: file.originalname,
-          path: `/assets/cases/${caseId}/${file.filename}`,
-          type,
-        });
-      }
+      files.push({
+        originalName: file.originalname,
+        path: `/assets/cases/${caseId}/${file.filename}`,
+        type,
+      });
     }
 
     res.json({ files });
@@ -273,15 +201,6 @@ app.post("/api/admin/upload", upload.array("files"), async (req, res, next) => {
 app.delete("/api/admin/file", async (req, res, next) => {
   try {
     const assetPath = String(req.query.path || "");
-    if (useCos && (assetPath.startsWith("http://") || assetPath.startsWith("https://"))) {
-      const key = getCosKey(assetPath);
-      if (!key.startsWith("assets/cases/")) {
-        return res.status(400).json({ error: "Invalid COS asset path" });
-      }
-      await deleteCosObject(key);
-      return res.json({ ok: true });
-    }
-
     if (!assetPath.startsWith("/assets/cases/")) {
       return res.status(400).json({ error: "Only case assets can be deleted" });
     }
@@ -307,5 +226,5 @@ app.listen(port, () => {
   console.log(`Case admin server running at http://localhost:${port}`);
   console.log(`Case content file: ${contentPath}`);
   console.log(`Case assets directory: ${assetsCasesDir}`);
-  console.log(`Asset mode: ${useCos ? "Tencent COS" : "local disk"}`);
+  console.log(`Asset mode: ${assetStorage} disk`);
 });

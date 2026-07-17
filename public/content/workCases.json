@@ -1,25 +1,5 @@
 [
   {
-    "id": "opl-summer",
-    "title": "OPL 暑期赛主视觉",
-    "category": "KEY VISUAL",
-    "year": "2021",
-    "summary": "以赛事气质与产品角色为核心，建立兼具传播识别与舞台延展性的主视觉系统。",
-    "tags": [
-      "赛事 KV",
-      "视觉系统",
-      "电竞传播"
-    ],
-    "cover": "/assets/cases/opl-summer/1782502172011-2021-opl-kv-_logo.jpg",
-    "featured": false,
-    "featuredOrder": 1,
-    "masonry": true,
-    "masonryOrder": 1,
-    "masonryImages": [],
-    "detailMedia": [],
-    "masonryMedia": []
-  },
-  {
     "id": "ivs-asia",
     "title": "IVS 中文亚洲对抗赛",
     "category": "KEY VISUAL",
@@ -35,79 +15,84 @@
     "featuredOrder": 2,
     "masonry": true,
     "masonryOrder": 2,
-    "masonryImages": [
-      "/assets/cases/key-visual/ivs-asia.jpg"
-    ],
+    "masonryImages": [],
     "detailMedia": [
+      {
+        "type": "image",
+        "src": "/assets/cases/key-visual/ivs-asia.jpg",
+        "alt": "IVS 中文亚洲对抗赛 KV",
+        "showInMasonry": true
+      },
+      {
+        "type": "video",
+        "src": "/assets/cases/ivs-asia/1784105135691-df355635-ivs.m4v",
+        "poster": "/assets/cases/key-visual/ivs-asia.jpg",
+        "alt": "IVS 中文亚洲对抗赛",
+        "showInMasonry": true
+      },
+      {
+        "type": "video",
+        "src": "/assets/cases/ivs-asia/1784105220576-0725b0bb-ivs.m4v",
+        "poster": "/assets/cases/key-visual/ivs-asia.jpg",
+        "alt": "IVS 中文亚洲对抗赛",
+        "showInMasonry": false
+      }
+    ],
+    "masonryMedia": [
       {
         "type": "image",
         "src": "/assets/cases/key-visual/ivs-asia.jpg",
         "alt": "IVS 中文亚洲对抗赛 KV"
-      }
-    ],
-    "masonryMedia": [
+      },
       {
-        "type": "image",
-        "src": "/assets/cases/key-visual/ivs-asia.jpg",
+        "type": "video",
+        "src": "/assets/cases/ivs-asia/1784105135691-df355635-ivs.m4v",
+        "poster": "/assets/cases/key-visual/ivs-asia.jpg",
         "alt": "IVS 中文亚洲对抗赛"
       }
-    ]
+    ],
+    "featuredHome": true
   },
   {
-    "id": "event-package",
-    "title": "赛事直播包装系统",
-    "category": "PACKAGE",
+    "id": "case-1782502504954",
+    "title": "第五人格弹幕互动",
+    "category": "KEY VISUAL",
     "year": "2026",
-    "summary": "覆盖大屏、直播导视和动态包装的赛事视觉资产，服务现场和线上传播双场景。",
+    "summary": "第五人格日本IVS，在比赛现场结合AR，制作弹幕互动",
     "tags": [
-      "直播包装",
-      "大屏视觉",
-      "动态图形"
+      "虚幻引擎"
     ],
-    "cover": "/assets/cases/package/event-package-01.png",
-    "featured": true,
-    "featuredOrder": 3,
+    "cover": "/assets/cases/case-1782502504954/1782502577187-asset.png",
+    "featured": false,
+    "featuredOrder": 9,
     "masonry": true,
-    "masonryOrder": 3,
-    "masonryImages": [
-      "/assets/cases/package/event-package-01.png",
-      "/assets/cases/package/event-package-02.png",
-      "/assets/cases/package/event-package-03.png"
+    "masonryOrder": 9,
+    "masonryImages": [],
+    "masonryMedia": [
+      {
+        "type": "video",
+        "src": "/assets/cases/case-1782502504954/1782502598581-asset.mp4",
+        "poster": "/assets/cases/case-1782502504954/1782502577187-asset.png",
+        "alt": "case-1782502504954"
+      }
     ],
     "detailMedia": [
       {
-        "type": "image",
-        "src": "/assets/cases/package/event-package-01.png",
-        "alt": "赛事包装画面 1"
+        "type": "video",
+        "src": "/assets/cases/case-1782502504954/1782502586813-asset.mp4",
+        "poster": "/assets/cases/case-1782502504954/1782502577187-asset.png",
+        "alt": "case-1782502504954",
+        "showInMasonry": false
       },
       {
-        "type": "image",
-        "src": "/assets/cases/package/event-package-02.png",
-        "alt": "赛事包装画面 2"
-      },
-      {
-        "type": "image",
-        "src": "/assets/cases/package/event-package-03.png",
-        "alt": "赛事包装画面 3"
+        "type": "video",
+        "src": "/assets/cases/case-1782502504954/1782502598581-asset.mp4",
+        "poster": "/assets/cases/case-1782502504954/1782502577187-asset.png",
+        "alt": "case-1782502504954",
+        "showInMasonry": true
       }
     ],
-    "masonryMedia": [
-      {
-        "type": "image",
-        "src": "/assets/cases/package/event-package-01.png",
-        "alt": "赛事直播包装系统"
-      },
-      {
-        "type": "image",
-        "src": "/assets/cases/package/event-package-02.png",
-        "alt": "赛事直播包装系统"
-      },
-      {
-        "type": "image",
-        "src": "/assets/cases/package/event-package-03.png",
-        "alt": "赛事直播包装系统"
-      }
-    ]
+    "featuredHome": false
   },
   {
     "id": "yugengji",
@@ -130,167 +115,236 @@
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309209-_-2_1.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309215-_-2_2.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309219-_-2_3.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309221-_-2_4.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309222-_-2_5.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309229-_-2_6.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309233-_-2_7.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309236-_-2_8.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309251-_-2_9.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309261-_-2_10.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309268-_-2_11.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309276-_-2_12.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309283-_-2_13.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309295-_-2_14.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309301-_-2_15.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309312-_-2_16.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309321-_-2_17.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309332-_-2_18.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309339-_-2_19.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309351-_-2_20.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309359-_-2_21.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309371-_-2_22.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309378-_-2_23.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309389-_-2_24.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309399-_-2_25.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309407-_-2_26.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309421-_-2_27.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309431-_-2_28.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309440-_-2_29.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309452-_-2_30.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309462-_-2_31.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309470-_-2_32.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
       },
       {
         "type": "image",
         "src": "/assets/cases/yugengji/1782502309478-_-2_33.jpg",
-        "alt": "渔耕记品牌视觉调整"
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": false
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502334747-_-2_13.jpg",
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": true
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502334751-_-2_15.jpg",
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": true
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502334754-_-2_16.jpg",
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": true
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502334758-_-2_18.jpg",
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": true
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502334761-_-2_19.jpg",
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": true
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/yugengji/1782502334767-_-2_20.jpg",
+        "alt": "渔耕记品牌视觉调整",
+        "showInMasonry": true
       }
     ],
     "masonryMedia": [
@@ -324,7 +378,85 @@
         "src": "/assets/cases/yugengji/1782502334767-_-2_20.jpg",
         "alt": "渔耕记品牌视觉调整"
       }
-    ]
+    ],
+    "featuredHome": true
+  },
+  {
+    "id": "opl-summer",
+    "title": "OPL 暑期赛主视觉",
+    "category": "KEY VISUAL",
+    "year": "2021",
+    "summary": "以赛事气质与产品角色为核心，建立兼具传播识别与舞台延展性的主视觉系统。",
+    "tags": [
+      "赛事 KV",
+      "视觉系统",
+      "电竞传播"
+    ],
+    "cover": "/assets/cases/opl-summer/1782502172011-2021-opl-kv-_logo.jpg",
+    "featured": false,
+    "featuredOrder": 1,
+    "masonry": true,
+    "masonryOrder": 1,
+    "masonryImages": [],
+    "detailMedia": [],
+    "masonryMedia": [],
+    "featuredHome": false
+  },
+  {
+    "id": "event-package",
+    "title": "赛事直播包装系统",
+    "category": "PACKAGE",
+    "year": "2026",
+    "summary": "覆盖大屏、直播导视和动态包装的赛事视觉资产，服务现场和线上传播双场景。",
+    "tags": [
+      "直播包装",
+      "大屏视觉",
+      "动态图形"
+    ],
+    "cover": "/assets/cases/package/event-package-01.png",
+    "featured": true,
+    "featuredOrder": 3,
+    "masonry": true,
+    "masonryOrder": 3,
+    "masonryImages": [],
+    "detailMedia": [
+      {
+        "type": "image",
+        "src": "/assets/cases/package/event-package-01.png",
+        "alt": "赛事包装画面 1",
+        "showInMasonry": true
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/package/event-package-02.png",
+        "alt": "赛事包装画面 2",
+        "showInMasonry": true
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/package/event-package-03.png",
+        "alt": "赛事包装画面 3",
+        "showInMasonry": true
+      }
+    ],
+    "masonryMedia": [
+      {
+        "type": "image",
+        "src": "/assets/cases/package/event-package-01.png",
+        "alt": "赛事包装画面 1"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/package/event-package-02.png",
+        "alt": "赛事包装画面 2"
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/package/event-package-03.png",
+        "alt": "赛事包装画面 3"
+      }
+    ],
+    "featuredHome": true
   },
   {
     "id": "identity-v-campaign",
@@ -342,28 +474,29 @@
     "featuredOrder": 5,
     "masonry": true,
     "masonryOrder": 5,
-    "masonryImages": [
-      "/assets/cases/media/identity-v-countdown.jpg"
-    ],
+    "masonryImages": [],
     "detailMedia": [
       {
         "type": "image",
         "src": "/assets/cases/media/identity-v-countdown.jpg",
-        "alt": "第五人格倒计时竖版传播图"
+        "alt": "第五人格倒计时竖版传播图",
+        "showInMasonry": true
       },
       {
         "type": "image",
         "src": "/assets/cases/media/identity-v-countdown-wide.png",
-        "alt": "第五人格倒计时横版传播图"
+        "alt": "第五人格倒计时横版传播图",
+        "showInMasonry": false
       }
     ],
     "masonryMedia": [
       {
         "type": "image",
         "src": "/assets/cases/media/identity-v-countdown.jpg",
-        "alt": "第五人格倒计时传播"
+        "alt": "第五人格倒计时竖版传播图"
       }
-    ]
+    ],
+    "featuredHome": true
   },
   {
     "id": "offline-activation",
@@ -381,12 +514,28 @@
     "featuredOrder": 6,
     "masonry": true,
     "masonryOrder": 6,
-    "masonryImages": [
-      "/assets/cases/media/offline-01.jpg",
-      "/assets/cases/media/offline-02.jpg",
-      "/assets/cases/media/offline-03.jpg"
-    ],
+    "masonryImages": [],
     "detailMedia": [
+      {
+        "type": "image",
+        "src": "/assets/cases/media/offline-01.jpg",
+        "alt": "线下活动现场 1",
+        "showInMasonry": true
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/media/offline-02.jpg",
+        "alt": "线下活动现场 2",
+        "showInMasonry": true
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/media/offline-03.jpg",
+        "alt": "线下活动现场 3",
+        "showInMasonry": true
+      }
+    ],
+    "masonryMedia": [
       {
         "type": "image",
         "src": "/assets/cases/media/offline-01.jpg",
@@ -403,23 +552,7 @@
         "alt": "线下活动现场 3"
       }
     ],
-    "masonryMedia": [
-      {
-        "type": "image",
-        "src": "/assets/cases/media/offline-01.jpg",
-        "alt": "线下活动执行视觉"
-      },
-      {
-        "type": "image",
-        "src": "/assets/cases/media/offline-02.jpg",
-        "alt": "线下活动执行视觉"
-      },
-      {
-        "type": "image",
-        "src": "/assets/cases/media/offline-03.jpg",
-        "alt": "线下活动执行视觉"
-      }
-    ]
+    "featuredHome": true
   },
   {
     "id": "valorant-energy",
@@ -437,11 +570,22 @@
     "featuredOrder": 7,
     "masonry": true,
     "masonryOrder": 7,
-    "masonryImages": [
-      "/assets/cases/unreal/valorant-01.png",
-      "/assets/cases/unreal/valorant-02.png"
-    ],
+    "masonryImages": [],
     "detailMedia": [
+      {
+        "type": "image",
+        "src": "/assets/cases/unreal/valorant-01.png",
+        "alt": "无畏契约源能国际邀请赛视觉 1",
+        "showInMasonry": true
+      },
+      {
+        "type": "image",
+        "src": "/assets/cases/unreal/valorant-02.png",
+        "alt": "无畏契约源能国际邀请赛视觉 2",
+        "showInMasonry": true
+      }
+    ],
+    "masonryMedia": [
       {
         "type": "image",
         "src": "/assets/cases/unreal/valorant-01.png",
@@ -453,18 +597,7 @@
         "alt": "无畏契约源能国际邀请赛视觉 2"
       }
     ],
-    "masonryMedia": [
-      {
-        "type": "image",
-        "src": "/assets/cases/unreal/valorant-01.png",
-        "alt": "无畏契约源能国际邀请赛"
-      },
-      {
-        "type": "image",
-        "src": "/assets/cases/unreal/valorant-02.png",
-        "alt": "无畏契约源能国际邀请赛"
-      }
-    ]
+    "featuredHome": true
   },
   {
     "id": "tft-open",
@@ -482,66 +615,36 @@
     "featuredOrder": 8,
     "masonry": true,
     "masonryOrder": 8,
-    "masonryImages": [
-      "/assets/cases/unreal/tft-worlds.jpg"
-    ],
+    "masonryImages": [],
     "detailMedia": [
       {
         "type": "video",
         "src": "/assets/cases/unreal/tft-worlds.mp4",
         "poster": "/assets/cases/unreal/tft-worlds.jpg",
-        "alt": "云顶金铲铲世界赛动态预览"
+        "alt": "云顶金铲铲世界赛动态预览",
+        "showInMasonry": false
       },
       {
         "type": "video",
         "src": "/assets/cases/unreal/tft.mp4",
         "poster": "/assets/cases/unreal/tft-worlds.jpg",
-        "alt": "云顶之弈动态预览"
+        "alt": "云顶之弈动态预览",
+        "showInMasonry": false
       },
+      {
+        "type": "image",
+        "src": "/assets/cases/unreal/tft-worlds.jpg",
+        "alt": "云顶金铲铲公开赛封面",
+        "showInMasonry": true
+      }
+    ],
+    "masonryMedia": [
       {
         "type": "image",
         "src": "/assets/cases/unreal/tft-worlds.jpg",
         "alt": "云顶金铲铲公开赛封面"
       }
     ],
-    "masonryMedia": [
-      {
-        "type": "image",
-        "src": "/assets/cases/unreal/tft-worlds.jpg",
-        "alt": "云顶金铲铲公开赛动态预览"
-      }
-    ]
-  },
-  {
-    "id": "case-1782502504954",
-    "title": "第五人格弹幕互动",
-    "category": "KEY VISUAL",
-    "year": "2026",
-    "summary": "第五人格日本IVS，在比赛现场结合AR，制作弹幕互动",
-    "tags": [
-      "虚幻引擎"
-    ],
-    "cover": "/assets/cases/case-1782502504954/1782502577187-asset.png",
-    "featured": false,
-    "featuredOrder": 9,
-    "masonry": true,
-    "masonryOrder": 9,
-    "masonryImages": [],
-    "masonryMedia": [
-      {
-        "type": "video",
-        "src": "/assets/cases/case-1782502504954/1782502598581-asset.mp4",
-        "poster": "/assets/cases/case-1782502504954/1782502577187-asset.png",
-        "alt": "case-1782502504954"
-      }
-    ],
-    "detailMedia": [
-      {
-        "type": "video",
-        "src": "/assets/cases/case-1782502504954/1782502586813-asset.mp4",
-        "poster": "/assets/cases/case-1782502504954/1782502577187-asset.png",
-        "alt": "case-1782502504954"
-      }
-    ]
+    "featuredHome": false
   }
 ]

@@ -4,12 +4,13 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import BorderGlow from "./BorderGlow";
 import Grainient from "./Grainient";
-import { caseStudies as fallbackCaseStudies, categories, loadCaseStudies, type CaseStudy, type Category, type MasonryMediaItem } from "./cases";
+import { caseStudies as fallbackCaseStudies, categories, isHomeFeaturedCase, loadCaseStudies, type CaseStudy, type Category, type MasonryMediaItem } from "./cases";
 import { isAdminAuthed } from "./auth";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const MASONRY_PAGE_SIZE = 36;
+const FEATURED_HOME_LIMIT = 12;
 
 const services = [
   {
@@ -74,10 +75,62 @@ type CaseMasonryItem = {
   media: MasonryMediaItem;
 };
 
+function getMasonryMediaForCase(caseStudy: CaseStudy): MasonryMediaItem[] {
+  const checkedDetailMedia = caseStudy.detailMedia
+    .filter((media) => media.showInMasonry)
+    .map(
+      (media): MasonryMediaItem => ({
+        type: media.type,
+        src: media.src,
+        poster: media.poster,
+        alt: media.alt || caseStudy.title,
+      }),
+    );
+
+  if (checkedDetailMedia.length > 0) return checkedDetailMedia;
+  if (caseStudy.masonryMedia && caseStudy.masonryMedia.length > 0) return caseStudy.masonryMedia;
+  if (caseStudy.masonryImages.length > 0) {
+    return caseStudy.masonryImages.map((src) => ({ type: "image" as const, src, alt: caseStudy.title }));
+  }
+  return caseStudy.cover ? [{ type: "image" as const, src: caseStudy.cover, alt: caseStudy.title }] : [];
+}
+
 type ActiveCaseState = {
   item: CaseStudy;
   initialMediaSrc?: string;
 };
+
+async function copyTextToClipboard(value: string) {
+  if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(value);
+    return;
+  }
+
+  const textArea = document.createElement("textarea");
+  textArea.value = value;
+  textArea.setAttribute("readonly", "");
+  textArea.style.position = "fixed";
+  textArea.style.top = "-9999px";
+  textArea.style.left = "-9999px";
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+  textArea.setSelectionRange(0, value.length);
+
+  const copied = document.execCommand("copy");
+  document.body.removeChild(textArea);
+
+  if (!copied) {
+    throw new Error("Copy failed");
+  }
+}
+
+function getCaseShareUrl(caseId: string) {
+  const url = new URL(window.location.href);
+  url.searchParams.set("case", caseId);
+  url.hash = "";
+  return url.toString();
+}
 
 const heroServices = ["视觉设计", "品牌包装", "虚幻引擎", "媒体传播"];
 
@@ -103,9 +156,11 @@ function App() {
   const [scrollRatio, setScrollRatio] = useState(0);
   const [galleryCategory, setGalleryCategory] = useState<"全部" | Category>("全部");
   const [galleryPage, setGalleryPage] = useState(1);
+  const [showAllFeaturedCases, setShowAllFeaturedCases] = useState(false);
   const [copiedContact, setCopiedContact] = useState<string | null>(null);
+  const openedSharedCaseRef = useRef<string | null>(null);
 
-  const featuredCases = useMemo(
+  const allFeaturedCases = useMemo(
     () =>
       [...caseStudyItems]
         .filter((item) => item.featured)
@@ -113,17 +168,17 @@ function App() {
     [caseStudyItems],
   );
 
+  const homeFeaturedCases = useMemo(
+    () => allFeaturedCases.filter(isHomeFeaturedCase).slice(0, FEATURED_HOME_LIMIT),
+    [allFeaturedCases],
+  );
+
   const caseMasonryItems = useMemo<CaseMasonryItem[]>(() => {
     return [...caseStudyItems]
       .filter((caseStudy) => caseStudy.masonry)
       .sort((a, b) => a.masonryOrder - b.masonryOrder)
       .flatMap((caseStudy) => {
-        const mediaItems: MasonryMediaItem[] =
-          caseStudy.masonryMedia && caseStudy.masonryMedia.length > 0
-            ? caseStudy.masonryMedia
-            : caseStudy.masonryImages.length > 0
-              ? caseStudy.masonryImages.map((src) => ({ type: "image" as const, src, alt: caseStudy.title }))
-              : [{ type: "image" as const, src: caseStudy.cover, alt: caseStudy.title }];
+        const mediaItems = getMasonryMediaForCase(caseStudy);
 
         return mediaItems
           .filter((media, index, allMedia) => allMedia.findIndex((item) => item.src === media.src && item.type === media.type) === index)
@@ -161,12 +216,12 @@ function App() {
 
   const copyContact = async (key: string, value: string) => {
     try {
-      await navigator.clipboard.writeText(value);
-      setCopiedContact(key);
-      window.setTimeout(() => setCopiedContact(null), 1600);
+      await copyTextToClipboard(value);
     } catch {
-      setCopiedContact(null);
+      // Some in-app browsers block clipboard writes on insecure origins.
     }
+    setCopiedContact(key);
+    window.setTimeout(() => setCopiedContact(null), 1600);
   };
 
   useLayoutEffect(() => {
@@ -311,9 +366,49 @@ function App() {
   }, []);
 
   useEffect(() => {
-    document.body.classList.toggle("modal-open", Boolean(activeCase));
-    return () => document.body.classList.remove("modal-open");
+    if (!activeCase) return undefined;
+
+    const scrollY = window.scrollY;
+    document.documentElement.classList.add("modal-open");
+    document.body.classList.add("modal-open");
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.left = "0";
+    document.body.style.right = "0";
+    document.body.style.width = "100%";
+
+    return () => {
+      const previousHtmlScrollBehavior = document.documentElement.style.scrollBehavior;
+      const previousBodyScrollBehavior = document.body.style.scrollBehavior;
+
+      document.documentElement.style.scrollBehavior = "auto";
+      document.body.style.scrollBehavior = "auto";
+      document.documentElement.classList.remove("modal-open");
+      document.body.classList.remove("modal-open");
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.width = "";
+      window.scrollTo({ top: scrollY, left: 0, behavior: "auto" });
+
+      window.requestAnimationFrame(() => {
+        document.documentElement.style.scrollBehavior = previousHtmlScrollBehavior;
+        document.body.style.scrollBehavior = previousBodyScrollBehavior;
+      });
+    };
   }, [activeCase]);
+
+  useEffect(() => {
+    const sharedCaseId = new URLSearchParams(window.location.search).get("case");
+    if (!sharedCaseId || activeCase || openedSharedCaseRef.current === sharedCaseId) return;
+
+    const sharedCase = caseStudyItems.find((item) => item.id === sharedCaseId);
+    if (sharedCase) {
+      openedSharedCaseRef.current = sharedCaseId;
+      setActiveCase({ item: sharedCase });
+    }
+  }, [activeCase, caseStudyItems]);
 
   const heroStyle = {
     "--hero-progress": scrollRatio.toString(),
@@ -547,10 +642,37 @@ function App() {
 
             <div className="work-block">
               <div className="featured-case-grid">
-                {featuredCases.map((item) => (
+                {homeFeaturedCases.map((item) => (
                   <FeaturedCaseCard item={item} key={item.id} onOpen={openCase} />
                 ))}
               </div>
+              {allFeaturedCases.length > 0 && (
+                <div className="featured-actions">
+                  <button
+                    className="featured-more-button"
+                    type="button"
+                    onClick={() => setShowAllFeaturedCases((visible) => !visible)}
+                  >
+                    {showAllFeaturedCases ? "收起精品案例" : "查看更多精品案例"}
+                  </button>
+                  <span>
+                    首页精选最多 {FEATURED_HOME_LIMIT} 个 / 全部精品 {allFeaturedCases.length} 个
+                  </span>
+                </div>
+              )}
+              {showAllFeaturedCases && (
+                <div className="featured-expanded">
+                  <div className="featured-expanded-heading">
+                    <span className="section-label">ALL FEATURED CASES</span>
+                    <h3>全部精品案例</h3>
+                  </div>
+                  <div className="featured-case-grid featured-case-grid-all">
+                    {allFeaturedCases.map((item) => (
+                      <FeaturedCaseCard item={item} key={`all-${item.id}`} onOpen={openCase} />
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="work-block">
@@ -827,14 +949,10 @@ function MasonryTile({ item, onOpen }: { item: CaseMasonryItem; onOpen: (item: C
 
 function CaseModal({ initialMediaSrc, item, onClose }: { initialMediaSrc?: string; item: CaseStudy; onClose: () => void }) {
   const [previewImage, setPreviewImage] = useState<{ src: string; alt: string } | null>(null);
+  const [shareStatus, setShareStatus] = useState<"idle" | "done">("idle");
   const mediaRefs = useRef<Record<string, HTMLElement | null>>({});
   const fallbackDetailMedia = item.detailMedia.length > 0 ? item.detailMedia : [{ type: "image" as const, src: item.cover, alt: item.title }];
-  const masonryMedia: MasonryMediaItem[] =
-    item.masonryMedia && item.masonryMedia.length > 0
-      ? item.masonryMedia
-      : item.masonryImages.length > 0
-        ? item.masonryImages.map((src) => ({ type: "image" as const, src, alt: item.title }))
-        : [{ type: "image" as const, src: item.cover, alt: item.title }];
+  const masonryMedia = getMasonryMediaForCase(item);
   const initialMasonryMedia = initialMediaSrc ? masonryMedia.find((media) => media.src === initialMediaSrc) : undefined;
   const detailMedia =
     initialMediaSrc && !fallbackDetailMedia.some((media) => media.src === initialMediaSrc) && initialMasonryMedia
@@ -871,6 +989,23 @@ function CaseModal({ initialMediaSrc, item, onClose }: { initialMediaSrc?: strin
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [onClose, previewImage]);
 
+  const shareCase = async () => {
+    const url = getCaseShareUrl(item.id);
+
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: item.title, text: item.summary, url });
+      } else {
+        await copyTextToClipboard(url);
+      }
+
+      setShareStatus("done");
+      window.setTimeout(() => setShareStatus("idle"), 1600);
+    } catch {
+      setShareStatus("idle");
+    }
+  };
+
   return (
     <div className="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="case-title">
       <button className="modal-scrim" onClick={onClose} aria-label="关闭项目详情" />
@@ -880,9 +1015,14 @@ function CaseModal({ initialMediaSrc, item, onClose }: { initialMediaSrc?: strin
             <span>{item.category}</span>
             <h2 id="case-title">{item.title}</h2>
           </div>
-          <button className="close-button" onClick={onClose} aria-label="关闭">
-            ×
-          </button>
+          <div className="modal-actions">
+            <button className="share-button" type="button" onClick={shareCase}>
+              {shareStatus === "done" ? "已复制" : "分享案例"}
+            </button>
+            <button className="close-button" onClick={onClose} aria-label="关闭">
+              ×
+            </button>
+          </div>
         </header>
         <p className="modal-summary">{item.summary}</p>
         <div className="tag-row">
@@ -895,7 +1035,6 @@ function CaseModal({ initialMediaSrc, item, onClose }: { initialMediaSrc?: strin
             media.type === "video" ? (
               <video
                 controls
-                muted
                 playsInline
                 preload="metadata"
                 poster={media.poster}
